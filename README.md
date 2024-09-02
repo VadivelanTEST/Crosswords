@@ -22,7 +22,7 @@ Stay updated with our latest posts and puzzle solutions:
 
 - **Blog**: [Crossword Hints](https://crosswordhints.blogspot.com/)
 - **Twitter**: [@CrosswordHints](#) *(Replace with actual link)*
-- **Facebook**: [Crossword Hints](#) *(Replace with actual link)*
+- **Facebook**: [Crossword Hints](https://www.facebook.com/groups/1029189165313914) 
 
 ## Contribute
 
