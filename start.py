@@ -1,5 +1,4 @@
 import os
-import requests
 import smtplib
 import json
 import time
