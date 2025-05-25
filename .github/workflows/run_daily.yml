@@ -2,7 +2,7 @@ name: Run Blogger Script Daily
 
 on:
   schedule:
-    - cron: '10 4 * * *'  # 9:40 AM IST (convert to UTC: 4:10 AM)
+    - cron: '40 9 * * *'  # 03:10 PM IST (converted to UTC: 09:40 AM)
   workflow_dispatch:  # allows manual trigger too
 
 jobs:
