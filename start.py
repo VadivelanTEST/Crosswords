@@ -185,7 +185,7 @@ def send_email(to_email, subject, html_content):
 # Main function to run the script
 def main():
     #url = "https://www.xwordinfo.com/JSON/Data.ashx?date=04/11/2025&format=text"
-    crossword_date = "05/24/2025"  # Update with dynamic date if needed
+    crossword_date = datetime.now().strftime("%m/%d/%Y")  # Using today's date
     url = f"https://www.xwordinfo.com/JSON/Data.ashx?date={crossword_date}&format=text"
     crossword_data = fetch_crossword_data(url)
 
