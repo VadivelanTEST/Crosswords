@@ -68,12 +68,12 @@ def fetch_crossword_data(url):
 def format_to_html(crossword_data, date):
     html = f"""
         <header>
-            <h1 itemprop="headline">NY Times Crossword Complete Solution: {date.strftime('%B %d, %Y')}</h1>
+            <h1 itemprop="headline">XWordHint Crossword Complete Solution: {date.strftime('%B %d, %Y')}</h1>
             <p class="post-meta">Published on {date.strftime('%A, %B %d, %Y')} • Updated daily</p>
         </header>
 
         <section aria-label="Crossword Solution Overview">
-            <p itemprop="description">Our expert breakdown helps you solve the {date.strftime('%B %d')} NYT crossword while expanding your vocabulary. Learn answer strategies and discover word connections.</p>
+            <p itemprop="description">Our expert breakdown helps you solve the {date.strftime('%B %d')} XWordHint crossword while expanding your vocabulary. Learn answer strategies and discover word connections.</p>
         </section>
 
         <section aria-label="Across Clues Solutions">
@@ -192,7 +192,7 @@ def main():
     if crossword_data:
         date_str = crossword_data['date']
         date = datetime.strptime(date_str, '%m/%d/%Y')
-        title = f"NY Times Crossword Answers {date.strftime('%B %d, %Y')} | Expert Breakdown & Tips"
+        title = f"XWordHint Crossword Answers {date.strftime('%B %d, %Y')} | Expert Breakdown & Tips"
         formatted_html = format_to_html(crossword_data, date)
         send_email("velanms1993.qrco@blogger.com", title, formatted_html)
 
