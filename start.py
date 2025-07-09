@@ -71,6 +71,72 @@ def generate_hint_text(answer, clue):
     
     return hints
 
+# Function to create crossword grid without answers
+def create_crossword_grid(crossword_data):
+    if 'size' not in crossword_data:
+        return "<p>Grid data not available for this puzzle.</p>"
+    
+    size = crossword_data['size']
+    rows = size['rows']
+    cols = size['cols']
+    
+    # Initialize grid with empty cells
+    grid = [['.' for _ in range(cols)] for _ in range(rows)]
+    
+    # Mark cells that contain letters (not black squares)
+    if 'grid' in crossword_data:
+        for i, cell in enumerate(crossword_data['grid']):
+            row = i // cols
+            col = i % cols
+            if cell != '.':
+                grid[row][col] = ''  # Empty cell for letter
+    
+    # Add clue numbers
+    clue_numbers = {}
+    if 'gridnums' in crossword_data:
+        for i, num in enumerate(crossword_data['gridnums']):
+            if num != 0:
+                row = i // cols
+                col = i % cols
+                clue_numbers[(row, col)] = num
+    
+    # Generate HTML grid
+    html = f"""
+    <div class="crossword-grid-container">
+        <h2>🧩 Interactive Crossword Grid</h2>
+        <p class="grid-instructions">Click on numbered squares to see the corresponding clue hint below!</p>
+        <div class="crossword-grid" style="grid-template-columns: repeat({cols}, 1fr); grid-template-rows: repeat({rows}, 1fr);">
+    """
+    
+    for row in range(rows):
+        for col in range(cols):
+            cell_class = "grid-cell"
+            cell_content = ""
+            cell_id = f"cell-{row}-{col}"
+            
+            if grid[row][col] == '.':
+                # Black square
+                cell_class += " black-cell"
+            else:
+                # White square for letter
+                cell_class += " white-cell"
+                if (row, col) in clue_numbers:
+                    cell_content = f'<span class="clue-number">{clue_numbers[(row, col)]}</span>'
+                cell_content += '<input type="text" maxlength="1" class="letter-input" disabled>'
+            
+            html += f'<div class="{cell_class}" id="{cell_id}">{cell_content}</div>'
+    
+    html += """
+        </div>
+        <div class="grid-controls">
+            <button id="reveal-grid" class="reveal-button">🔍 Reveal Complete Grid</button>
+            <button id="clear-grid" class="clear-button">🔄 Clear Grid</button>
+        </div>
+    </div>
+    """
+    
+    return html
+
 # Function to fetch crossword data from URL
 def fetch_crossword_data(url):
     headers = {
@@ -106,7 +172,7 @@ def fetch_crossword_data(url):
     return None
 
 def format_to_html(crossword_data, date):
-    html = f"""    
+    html = f"""   
         <header>
             <h1 itemprop="headline">NYT Crossword Hints & Expert Solutions: {date.strftime('%B %d, %Y')}</h1>
             <p class="post-meta">Published on {date.strftime('%A, %B %d, %Y')} • Daily puzzle hints • <em>Crossword clues © The New York Times</em></p>
@@ -235,9 +301,9 @@ def format_to_html(crossword_data, date):
             <h2>🗂️ More NYT Crossword Help</h2>
             <p>Looking for more puzzle solutions? Check out our comprehensive archive of NYT crossword hints and answers. We update daily with expert analysis and solving strategies.</p>
             <ul class="archive-links">
-                <li><a href="/2025/07">Complete NYT Crossword Archive</a></li>
-                <li><a href="/2025/07">Advanced Solving Techniques</a></li>
-                <li><a href="/2025/07">Common Crossword Words</a></li>
+                <li><a href="/nyt-crossword-archive/">Complete NYT Crossword Archive</a></li>
+                <li><a href="/crossword-solving-tips/">Advanced Solving Techniques</a></li>
+                <li><a href="/crossword-word-lists/">Common Crossword Words</a></li>
             </ul>
         </section>
 
