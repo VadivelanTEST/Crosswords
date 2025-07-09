@@ -635,8 +635,7 @@ def format_to_html(crossword_data, date):
                 const letterInputs = document.querySelectorAll('.letter-input');
                 
                 // Store the answers for reveal functionality
-                const answers = {crossword_data.get('answers', {{}})};
-                
+                const answers = {json.dumps(crossword_data.get('answers', {}))};                
                 if (revealBtn) {{
                     revealBtn.addEventListener('click', function() {{
                         if (confirm('Are you sure you want to reveal the complete grid? This will show all answers!')) {{
