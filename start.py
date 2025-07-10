@@ -196,7 +196,7 @@ def fetch_crossword_data(url):
 def format_to_html(crossword_data, date):
     html = f"""    
         <header>
-            <h1 itemprop="headline">NYT Crossword Hints & Expert Solutions: {date.strftime('%B %d, %Y')}</h1>
+            <h1 itemprop="headline">XWordHint Crossword Answers Hints & Expert Solutions: {date.strftime('%B %d, %Y')}</h1>
             <p class="post-meta">Published on {date.strftime('%A, %B %d, %Y')} • Daily puzzle hints • <em>Crossword clues © The New York Times</em></p>
         </header>
 
@@ -332,7 +332,102 @@ def format_to_html(crossword_data, date):
         <footer>
             <p><strong>Disclaimer:</strong> Crossword clues and grid © The New York Times. This site provides hints and educational content for puzzle enthusiasts. XWordHint is not affiliated with The New York Times.</p>
             <p class="update-info">Last updated: {datetime.now().strftime('%B %d, %Y at %I:%M %p')}</p>
-        </footer>        
+        </footer>     
+        <style>
+   
+
+    .clue-item {
+        margin-bottom: 25px;
+        border: 1px solid #ddd;
+        padding: 15px;
+        border-radius: 8px;
+    }
+
+    .hint-list {
+        background: #f9f9f9;
+        padding: 15px;
+        border-radius: 5px;
+    }
+
+    .answer-reveal {
+        margin-top: 10px;
+    }
+
+    .answer-container {
+        background: #fffacd;
+        padding: 10px;
+        border-radius: 5px;
+        margin-top: 10px;
+    }
+
+    .strategy-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+    }
+
+    .strategy-item {
+        background: #f0f8ff;
+        padding: 20px;
+        border-radius: 8px;
+    }
+
+    .stats-container {
+        display: flex;
+        justify-content: space-around;
+        background: #f5f5f5;
+        padding: 20px;
+        border-radius: 8px;
+    }
+
+    .stat-item {
+        text-align: center;
+    }
+
+    .stat-number {
+        display: block;
+        font-size: 2em;
+        font-weight: bold;
+        color: #2c3e50;
+    }
+
+  
+
+    
+
+    
+
+    .reveal-button,
+    .clear-button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        font-size: 14px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: all 0.3s;
+    }
+
+    .reveal-button {
+        background-color: #28a745;
+        color: white;
+    }
+
+    .reveal-button:hover {
+        background-color: #218838;
+    }
+
+    .clear-button {
+        background-color: #6c757d;
+        color: white;
+    }
+
+    .clear-button:hover {
+        background-color: #545b62;
+    }
+
+    
+</style>
 
         <script>
             // Grid interaction functionality
@@ -412,7 +507,7 @@ def main():
     if crossword_data:
         date_str = crossword_data['date']
         date = datetime.strptime(date_str, '%m/%d/%Y')
-        title = f"NYT Crossword Hints & Solutions - {date.strftime('%B %d, %Y')} | Expert Puzzle Help"
+        title = f"XWordHint Crossword Answers Hints & Solutions - {date.strftime('%B %d, %Y')} | Expert Puzzle Help"
         formatted_html = format_to_html(crossword_data, date)
         send_email("velanms1993.qrco@blogger.com", title, formatted_html)
         print(f"✅ Email sent successfully for {date.strftime('%B %d, %Y')} crossword!")
