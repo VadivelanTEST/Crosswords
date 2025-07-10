@@ -201,7 +201,7 @@ def format_to_html(crossword_data, date):
         </header>
 
         <section aria-label="Crossword Solution Overview">
-            <p itemprop="description">Master today's NYT crossword with our expert hint system. We provide synonyms, antonyms, and strategic clues to help you solve without spoiling the fun. Perfect for crossword enthusiasts who want that satisfying "aha!" moment.</p>
+            <p itemprop="description">Master today's NYT crossword with our expert hint system. We provide synonyms, antonyms, and strategic clues to help you solve without spoiling the fun. Perfect for crossword lover who want that satisfying "aha!" moment.</p>
         </section>       
 
         <div class="difficulty-indicator">
