@@ -333,101 +333,100 @@ def format_to_html(crossword_data, date):
             <p><strong>Disclaimer:</strong> Crossword clues and grid © The New York Times. This site provides hints and educational content for puzzle enthusiasts. XWordHint is not affiliated with The New York Times.</p>
             <p class="update-info">Last updated: {datetime.now().strftime('%B %d, %Y at %I:%M %p')}</p>
         </footer>     
-        <style>
-   
+        <style>   
 
-    .clue-item {
-        margin-bottom: 25px;
-        border: 1px solid #ddd;
-        padding: 15px;
-        border-radius: 8px;
-    }
-
-    .hint-list {
-        background: #f9f9f9;
-        padding: 15px;
-        border-radius: 5px;
-    }
-
-    .answer-reveal {
-        margin-top: 10px;
-    }
-
-    .answer-container {
-        background: #fffacd;
-        padding: 10px;
-        border-radius: 5px;
-        margin-top: 10px;
-    }
-
-    .strategy-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 20px;
-    }
-
-    .strategy-item {
-        background: #f0f8ff;
-        padding: 20px;
-        border-radius: 8px;
-    }
-
-    .stats-container {
-        display: flex;
-        justify-content: space-around;
-        background: #f5f5f5;
-        padding: 20px;
-        border-radius: 8px;
-    }
-
-    .stat-item {
-        text-align: center;
-    }
-
-    .stat-number {
-        display: block;
-        font-size: 2em;
-        font-weight: bold;
-        color: #2c3e50;
-    }
-
-  
-
-    
-
-    
-
-    .reveal-button,
-    .clear-button {
-        padding: 10px 20px;
-        border: none;
-        border-radius: 5px;
-        font-size: 14px;
-        cursor: pointer;
-        font-weight: bold;
-        transition: all 0.3s;
-    }
-
-    .reveal-button {
-        background-color: #28a745;
-        color: white;
-    }
-
-    .reveal-button:hover {
-        background-color: #218838;
-    }
-
-    .clear-button {
-        background-color: #6c757d;
-        color: white;
-    }
-
-    .clear-button:hover {
-        background-color: #545b62;
-    }
-
-    
-</style>
+            .clue-item {
+                margin-bottom: 25px;
+                border: 1px solid #ddd;
+                padding: 15px;
+                border-radius: 8px;
+            }
+        
+            .hint-list {
+                background: #f9f9f9;
+                padding: 15px;
+                border-radius: 5px;
+            }
+        
+            .answer-reveal {
+                margin-top: 10px;
+            }
+        
+            .answer-container {
+                background: #fffacd;
+                padding: 10px;
+                border-radius: 5px;
+                margin-top: 10px;
+            }
+        
+            .strategy-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 20px;
+            }
+        
+            .strategy-item {
+                background: #f0f8ff;
+                padding: 20px;
+                border-radius: 8px;
+            }
+        
+            .stats-container {
+                display: flex;
+                justify-content: space-around;
+                background: #f5f5f5;
+                padding: 20px;
+                border-radius: 8px;
+            }
+        
+            .stat-item {
+                text-align: center;
+            }
+        
+            .stat-number {
+                display: block;
+                font-size: 2em;
+                font-weight: bold;
+                color: #2c3e50;
+            }
+        
+          
+        
+            
+        
+            
+        
+            .reveal-button,
+            .clear-button {
+                padding: 10px 20px;
+                border: none;
+                border-radius: 5px;
+                font-size: 14px;
+                cursor: pointer;
+                font-weight: bold;
+                transition: all 0.3s;
+            }
+        
+            .reveal-button {
+                background-color: #28a745;
+                color: white;
+            }
+        
+            .reveal-button:hover {
+                background-color: #218838;
+            }
+        
+            .clear-button {
+                background-color: #6c757d;
+                color: white;
+            }
+        
+            .clear-button:hover {
+                background-color: #545b62;
+            }
+        
+            
+        </style>
 
         <script>
             // Grid interaction functionality
