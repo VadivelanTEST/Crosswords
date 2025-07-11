@@ -210,7 +210,7 @@ def format_to_html(crossword_data, date):
           <style type="text/css">.headline{{font-family: 'Segoe UI', sans-serif;font-size: 18px;fill: #2c3e50;font-weight: 600;}}            
           </style>
           <text x="50" y="50" class="headline">
-            XWordHint Crossword Answers · Hints · Expert Solutions: {date.strftime('%A, %B %d, %Y')}
+            Today NYT Crossword Answers - Hints 
           </text>
         </svg>         
         <div class="difficulty-indicator">
