@@ -204,23 +204,15 @@ def format_to_html(crossword_data, date):
             <p itemprop="description">Master today's NYT crossword with our expert hint system. We provide synonyms, antonyms, and strategic clues to help you solve without spoiling the fun. Perfect for crossword lover who want that satisfying "aha!" moment.</p>
         </section>  
         <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-        <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="80" role="img" aria-labelledby="svgTitle svgDesc">
+        <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" role="img" aria-labelledby="svgTitle svgDesc">
           <title id="svgTitle">XWordHint Nyt Daily Crossword solve hint</title>
           <desc id="svgDesc">Expert crossword hints, answers, and solutions with the current date.</desc>
           <style type="text/css">.headline{{font-family: 'Segoe UI', sans-serif;font-size: 18px;fill: #2c3e50;font-weight: 600;}}            
           </style>
-          <text x="10" y="50" class="headline">
+          <text x="50" y="50" class="headline">
             XWordHint Crossword Answers · Hints · Expert Solutions: {date.strftime('%A, %B %d, %Y')}
           </text>
-        </svg>
-
-        <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="80">
-          <style>.headline{{font-family: 'Segoe UI', sans-serif;font-size: 18px;fill: #2c3e50;font-weight: 600;}}
-          </style>
-          <text x="10" y="50" class="headline">
-            XWordHint Crossword Answers Hints & Expert Solutions: {date.strftime('%A, %B %d, %Y')}
-          </text>
-        </svg>  
+        </svg>         
         <div class="difficulty-indicator">
             <h2>Today is Puzzle Difficulty: {random.choice(['Moderate', 'Challenging', 'Medium', 'Tricky'])}</h2>
             <p>💡 <strong>Pro Tip:</strong> Start with the fill-in-the-blank clues - they're usually the easiest entry points!</p>
