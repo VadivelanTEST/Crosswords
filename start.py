@@ -196,16 +196,22 @@ def fetch_crossword_data(url):
 def format_to_html(crossword_data, date):
     html = f"""    
         <header>
-            <h1 itemprop="headline">NYT Crossword Answers & Hints – {{ date.strftime('%B %d, %Y') }} | XWordHint Today Trends & Vibez</h1>
+            <h1 itemprop="headline">NYT Crossword Answers & Hints – {date.strftime('%B %d, %Y')} | XWordHint Today Trends & Vibez</h1>
             <p class="post-meta">Published on {date.strftime('%A, %B %d, %Y')} • Daily puzzle hints • <em>Crossword clues © The New York Times</em></p>
         </header>
 
         <section aria-label="Crossword Solution Overview">
             <p itemprop="description">Master today's NYT crossword with our expert hint system. We provide synonyms, antonyms, and strategic clues to help you solve without spoiling the fun. Perfect for crossword lover who want that satisfying "aha!" moment.</p>
         </section>       
-
+        <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="80">
+          <style>.headline{{font-family: 'Segoe UI', sans-serif;font-size: 18px;fill: #2c3e50;font-weight: 600;}}
+          </style>
+          <text x="10" y="50" class="headline">
+            XWordHint Crossword Answers Hints & Expert Solutions: {date.strftime('%A, %B %d, %Y')}
+          </text>
+        </svg>  
         <div class="difficulty-indicator">
-            <h2>Today's Puzzle Difficulty: {random.choice(['Moderate', 'Challenging', 'Medium', 'Tricky'])}</h2>
+            <h2>Today is Puzzle Difficulty: {random.choice(['Moderate', 'Challenging', 'Medium', 'Tricky'])}</h2>
             <p>💡 <strong>Pro Tip:</strong> Start with the fill-in-the-blank clues - they're usually the easiest entry points!</p>
         </div>
 
@@ -323,9 +329,9 @@ def format_to_html(crossword_data, date):
             <h2>🗂️ More NYT Crossword Help</h2>
             <p>Looking for more puzzle solutions? Check out our comprehensive archive of NYT crossword hints and answers. We update daily with expert analysis and solving strategies.</p>
             <ul class="archive-links">
-                <li><a href="/nyt-crossword-archive/">Complete NYT Crossword Archive</a></li>
-                <li><a href="/crossword-solving-tips/">Advanced Solving Techniques</a></li>
-                <li><a href="/crossword-word-lists/">Common Crossword Words</a></li>
+                <li><a href="/search/label/puzzle%20solutions">Complete NYT Crossword Archive</a></li>
+                <li><a href="/search/label/Daily%20Puzzle">Advanced Solving Techniques</a></li>
+                <li><a href="/search/label/NYT%20Clues">Common Crossword Words</a></li>
             </ul>
         </section>
 
