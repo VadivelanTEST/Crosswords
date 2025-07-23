@@ -196,7 +196,6 @@ def fetch_crossword_data(url):
 def format_to_html(crossword_data, date):
     html = f"""    
         <header>
-            <h1 itemprop="headline">NYT Crossword Answers & Hints – {date.strftime('%B %d, %Y')} | XWordHint Today Trends & Vibez</h1>
             <p class="post-meta">Published on {date.strftime('%A, %B %d, %Y')} • Daily puzzle hints • <em>Crossword clues © The New York Times</em></p>
         </header>
 
@@ -432,7 +431,7 @@ def main():
     if crossword_data:
         date_str = crossword_data['date']
         date = datetime.strptime(date_str, '%m/%d/%Y')
-        title = f"NYT Crossword Answers & Hints - {date.strftime('%B %d, %Y')} | XWordHint Today Vibez"
+        title = f"Xwordhint Crossword Answers - {date.strftime('%B %d, %Y')} | Today NYT Vibez"
         formatted_html = format_to_html(crossword_data, date)
         send_email("velanms1993.qrco@blogger.com", title, formatted_html)
         print(f"✅ Email sent successfully for {date.strftime('%B %d, %Y')} crossword!")
