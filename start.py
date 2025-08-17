@@ -94,12 +94,12 @@ def create_crossword_grid(crossword_data):
         # Create a simple grid representation
         grid_html = f"""
         <div class="crossword-grid-container">
-            <h2>🧩 Interactive Crossword Grid</h2>
+            <h2>Interactive Crossword Grid</h2>
             <p class="grid-instructions">Work on the puzzle using the clues below. This is a {rows}x{cols} grid.</p>
             <div class="simple-grid">
                 <div class="grid-placeholder">
                     <div class="grid-info">
-                        <h3>📋 Puzzle Layout</h3>
+                        <h3>Puzzle Layout</h3>
                         <p><strong>Grid Size:</strong> {rows} × {cols}</p>
                         <p><strong>Total Squares:</strong> {rows * cols}</p>
                         <p><strong>Across Clues:</strong> {len(crossword_data.get('clues', {}).get('across', []))}</p>
@@ -123,12 +123,12 @@ def create_crossword_grid(crossword_data):
                     </div>
                 </div>
                 <div class="grid-instructions-detail">
-                    <h4>🎯 How to Use This Puzzle:</h4>
+                    <h4>How to Use This Puzzle:</h4>
                     <ul>
-                        <li>📝 Read the clues below to find the answers</li>
-                        <li>🔍 Use our hints system for guidance</li>
-                        <li>🧩 Cross-reference Across and Down clues</li>
-                        <li>✨ Reveal answers when you're ready!</li>
+                        <li>Read the clues below to find the answers</li>
+                        <li>Use our hints system for guidance</li>
+                        <li>Cross-reference Across and Down clues</li>
+                        <li>Reveal answers when you're ready!</li>
                     </ul>
                 </div>
             </div>
@@ -141,9 +141,9 @@ def create_crossword_grid(crossword_data):
         print(f"Error creating grid: {e}")
         return f"""
         <div class="crossword-grid-container">
-            <h2>🧩 Crossword Puzzle</h2>
+            <h2>Crossword Puzzle</h2>
             <div class="grid-fallback">
-                <p>🎯 <strong>Today's Puzzle Ready!</strong></p>
+                <p><strong>Today's Puzzle Ready!</strong></p>
                 <div class="puzzle-stats">
                     <div class="stat-box">
                         <span class="stat-number">{len(crossword_data.get('clues', {}).get('across', []))}</span>
@@ -154,7 +154,7 @@ def create_crossword_grid(crossword_data):
                         <span class="stat-label">Down</span>
                     </div>
                 </div>
-                <p class="puzzle-instruction">📋 Use the clues and hints below to solve the puzzle!</p>
+                <p class="puzzle-instruction">Use the clues and hints below to solve the puzzle!</p>
             </div>
         </div>
         """
@@ -214,11 +214,11 @@ def format_to_html(crossword_data, date):
         </svg>         
         <div class="difficulty-indicator">
             <h2>Today is Puzzle Difficulty: {random.choice(['Moderate', 'Challenging', 'Medium', 'Tricky'])}</h2>
-            <p>💡 <strong>Pro Tip:</strong> Start with the fill-in-the-blank clues - they're usually the easiest entry points!</p>
+            <p><strong>Pro Tip:</strong> Start with the fill-in-the-blank clues - they're usually the easiest entry points!</p>
         </div>
 
         <section aria-label="Across Clues Hints">
-            <h2>🔍 Across Clues - Strategic Hints ({len(crossword_data['clues']['across'])} clues)</h2>
+            <h2> Across Clues - Strategic Hints ({len(crossword_data['clues']['across'])} clues)</h2>
             <div class="clue-group">"""
 
     for idx, (clue, answer) in enumerate(zip(crossword_data['clues']['across'], crossword_data['answers']['across']), 1):
@@ -227,13 +227,13 @@ def format_to_html(crossword_data, date):
         
         html += f"""
                 <div class="clue-item" itemscope itemtype="https://schema.org/Question">
-                    <h3 class="clue-title">🧩 {idx}A: <span itemprop="text">"{clue}"</span></h3>
+                    <h3 class="clue-title">{idx}A: <span itemprop="text">"{clue}"</span></h3>
                     <div class="clue-meta">
-                        <span class="letter-count">📏 {letter_count} letters</span>
-                        <span class="theme-hint">💭 Category: {random.choice(['General Knowledge', 'Wordplay', 'Common Word', 'Proper Noun', 'Abbreviation'])}</span>
+                        <span class="letter-count"> {letter_count} letters</span>
+                        <span class="theme-hint">Category: {random.choice(['General Knowledge', 'Wordplay', 'Common Word', 'Proper Noun', 'Abbreviation'])}</span>
                     </div>
                     <div class="hint-section">
-                        <h4>🎯 Solving Hints:</h4>
+                        <h4>Solving Hints:</h4>
                         <ul class="hint-list">"""
         
         for hint in hints[:3]:  # Show max 3 hints
@@ -241,10 +241,10 @@ def format_to_html(crossword_data, date):
         
         html += f"""</ul>
                         <details class="answer-reveal">
-                            <summary>🔓 Click to reveal answer (spoiler alert!)</summary>
+                            <summary>Click to reveal answer (spoiler alert!)</summary>
                             <div class="answer-container">
                                 <strong>Answer:</strong> <span class="answer-text">{answer}</span>
-                                <p class="answer-explanation">💡 <em>Remember this word for future puzzles!</em></p>
+                                <p class="answer-explanation"><em>Remember this word for future puzzles!</em></p>
                             </div>
                         </details>
                     </div>
@@ -253,7 +253,7 @@ def format_to_html(crossword_data, date):
     html += f"""</div></section>
 
         <section aria-label="Down Clues Hints">
-            <h2>🔍 Down Clues - Strategic Hints ({len(crossword_data['clues']['down'])} clues)</h2>
+            <h2> Down Clues - Strategic Hints ({len(crossword_data['clues']['down'])} clues)</h2>
             <div class="clue-group">"""
 
     for idx, (clue, answer) in enumerate(zip(crossword_data['clues']['down'], crossword_data['answers']['down']), 1):
@@ -262,13 +262,13 @@ def format_to_html(crossword_data, date):
         
         html += f"""
                 <div class="clue-item" itemscope itemtype="https://schema.org/Question">
-                    <h3 class="clue-title">🧩 {idx}D: <span itemprop="text">"{clue}"</span></h3>
+                    <h3 class="clue-title"> {idx}D: <span itemprop="text">"{clue}"</span></h3>
                     <div class="clue-meta">
-                        <span class="letter-count">📏 {letter_count} letters</span>
+                        <span class="letter-count"> {letter_count} letters</span>
                         <span class="theme-hint">💭 Category: {random.choice(['General Knowledge', 'Wordplay', 'Common Word', 'Proper Noun', 'Abbreviation'])}</span>
                     </div>
                     <div class="hint-section">
-                        <h4>🎯 Solving Hints:</h4>
+                        <h4>Solving Hints:</h4>
                         <ul class="hint-list">"""
         
         for hint in hints[:3]:  # Show max 3 hints
@@ -276,10 +276,10 @@ def format_to_html(crossword_data, date):
         
         html += f"""</ul>
                         <details class="answer-reveal">
-                            <summary>🔓 Click to reveal answer (spoiler alert!)</summary>
+                            <summary> Click to reveal answer (spoiler alert!)</summary>
                             <div class="answer-container">
                                 <strong>Answer:</strong> <span class="answer-text">{answer}</span>
-                                <p class="answer-explanation">💡 <em>Remember this word for future puzzles!</em></p>
+                                <p class="answer-explanation"><em>Remember this word for future puzzles!</em></p>
                             </div>
                         </details>
                     </div>
@@ -288,29 +288,29 @@ def format_to_html(crossword_data, date):
     html += f"""</div></section>
 
         <section aria-label="Crossword Solving Strategies">
-            <h2>🧠 Expert Solving Strategies</h2>
+            <h2>Expert Solving Strategies</h2>
             <div class="strategy-grid">
                 <div class="strategy-item">
-                    <h3>🎯 Start Smart</h3>
+                    <h3>Start Smart</h3>
                     <p>Begin with fill-in-the-blank clues and short 3-4 letter words. These are your foundation.</p>
                 </div>
                 <div class="strategy-item">
-                    <h3>❓ Decode the Clues</h3>
+                    <h3>Decode the Clues</h3>
                     <p>Question marks indicate wordplay or puns. "Maybe" suggests multiple interpretations.</p>
                 </div>
                 <div class="strategy-item">
-                    <h3>🔤 Use Cross-References</h3>
+                    <h3>Use Cross-References</h3>
                     <p>Let intersecting letters guide you. One correct answer unlocks several others.</p>
                 </div>
                 <div class="strategy-item">
-                    <h3>📚 Build Vocabulary</h3>
+                    <h3>Build Vocabulary</h3>
                     <p>Common crossword words repeat. Learning them speeds up future solving.</p>
                 </div>
             </div>
         </section>
 
         <section aria-label="Daily Crossword Stats">
-            <h2>📊 Today's Puzzle Stats</h2>
+            <h2>Today's Puzzle Stats</h2>
             <div class="stats-container">
                 <div class="stat-item">
                     <span class="stat-number">{len(crossword_data['clues']['across'])}</span>
@@ -328,7 +328,7 @@ def format_to_html(crossword_data, date):
         </section>
 
         <section aria-label="NYT Crossword Archive">
-            <h2>🗂️ More NYT Crossword Help</h2>
+            <h2>More NYT Crossword Help</h2>
             <p>Looking for more puzzle solutions? Check out our comprehensive archive of NYT crossword hints and answers. We update daily with expert analysis and solving strategies.</p>
             <ul class="archive-links">
                 <li><a href="/search/label/puzzle%20solutions">Complete NYT Crossword Archive</a></li>
@@ -370,7 +370,7 @@ def format_to_html(crossword_data, date):
                                 input.disabled = false;
                                 // Logic to fill answers would go here
                             }});
-                            this.textContent = '✅ Grid Revealed!';
+                            this.textContent = 'Grid Revealed!';
                             this.disabled = true;
                         }}
                     }});
@@ -434,7 +434,7 @@ def main():
         title = f"Xwordhint Crossword Answers - {date.strftime('%B %d, %Y')} | Today NYT Vibez"
         formatted_html = format_to_html(crossword_data, date)
         send_email("velanms1993.qrco@blogger.com", title, formatted_html)
-        print(f"✅ Email sent successfully for {date.strftime('%B %d, %Y')} crossword!")
+        print(f"Email sent successfully for {date.strftime('%B %d, %Y')} crossword!")
 
 # Execute the main function
 if __name__ == "__main__":
