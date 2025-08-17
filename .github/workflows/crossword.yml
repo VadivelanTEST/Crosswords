@@ -173,20 +173,774 @@ jobs:
           # Create commit message with current progress
           if [ -f "$PROGRESS_FILE" ]; then
             CURRENT_PROGRESS=$(cat $PROGRESS_FILE)
-            COMMIT_MSG="🤖 Update crossword progress: $CURRENT_PROGRESS
-
-#Automated update from GitHub Actions
-- Date processed: $CURRENT_PROGRESS 
-- Timestamp: $(date -u '+%Y-%m-%d %H:%M:%S UTC')
-- Workflow: ${{ github.workflow }}
-- Run: ${{ github.run_number }}"
+            COMMIT_MSG="🤖 Update crossword progress: $CURRENT_PROGRESS"
+          
+          echo "📋 Commit message prepared"
+          
+          # Commit the changes
+          if git commit -m "$COMMIT_MSG"; then
+            echo "✅ Commit created successfully"
+            
+            # Push the changes
+            echo "🚀 Pushing to remote repository..."
+            if git push origin HEAD; then
+              echo "✅ Push successful"
+              echo "committed=true" >> $GITHUB_OUTPUT
+            else
+              echo "❌ Push failed"
+              echo "committed=false" >> $GITHUB_OUTPUT
+              exit 1
+            fi
           else
-            COMMIT_MSG="🤖 Crossword processing attempt
+            echo "❌ Commit failed"
+            echo "committed=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+        fi
+        echo "=================================================="
+        
+    - name: 📈 Final summary
+      if: always()
+      run: |
+        echo "=================================================="
+        echo "📈 FINAL WORKFLOW SUMMARY"
+        echo "=================================================="
+        echo "🕒 Workflow completed at: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+        echo "⏱️  Total runtime: ${{ github.event_name }} trigger"
+        
+        if [ -f "$PROGRESS_FILE" ]; then
+          FINAL_PROGRESS=$(cat $PROGRESS_FILE)
+          echo "📅 Final progress: $FINAL_PROGRESS"
+          echo "➡️  Next run will process: $FINAL_PROGRESS"
+          
+          # Calculate some stats
+          START_DATE="1990-01-01"
+          CURRENT_DATE="$FINAL_PROGRESS"
+          echo "📊 Processing Statistics:"
+          echo "   🎯 Started from: $START_DATE"
+          echo "   📍 Current position: $CURRENT_DATE"
+        else
+          echo "❌ No progress file found"
+        fi
+        
+        echo ""
+        echo "🔄 Processing Status:"
+        echo "   ✨ Processor success: ${{ steps.process.outputs.success || 'unknown' }}"
+        echo "   💾 Commit success: ${{ steps.commit.outputs.committed || 'unknown' }}"
+        
+        echo ""
+        echo "⏰ Next scheduled run: Every 30 minutes"
+        echo "🔧 Manual trigger: Available in Actions tab"
+        echo "=================================================="
+        
+    - name: 🚨 Failure notification
+      if: failure()
+      run: |
+        echo "=================================================="
+        echo "🚨 WORKFLOW FAILED"
+        echo "=================================================="
+        echo "❌ The crossword processing workflow has failed"
+        echo "🕒 Failure time: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+        echo "🔗 Check the workflow logs for details"
+        echo "📧 Consider checking email credentials in secrets"
+        echo "🌐 Verify crossword data source availability"
+        echo "=================================================="
 
-Automated update from GitHub Actions
-- Timestamp: $(date -u '+%Y-%m-%d %H:%M:%S UTC')
-- Workflow: ${{ github.workflow }}
-- Run: ${{ github.run_number }}"
+    - name: 🎉 Success notification  
+      if: success()
+      run: |
+        echo "=================================================="
+        echo "🎉 WORKFLOW COMPLETED SUCCESSFULLY"
+        echo "=================================================="
+        echo "✅ Crossword processing completed successfully"
+        echo "🕒 Success time: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+        if [ -f "$PROGRESS_FILE" ]; then
+          echo "📅 Progress updated to: $(cat $PROGRESS_FILE)"
+        fi
+        echo "⏰ Next run scheduled in 30 minutes"
+        echo "=================================================="\n\n'"Automated update from GitHub Actions"
+          
+          echo "📋 Commit message prepared"
+          
+          # Commit the changes
+          if git commit -m "$COMMIT_MSG"; then
+            echo "✅ Commit created successfully"
+            
+            # Push the changes
+            echo "🚀 Pushing to remote repository..."
+            if git push origin HEAD; then
+              echo "✅ Push successful"
+              echo "committed=true" >> $GITHUB_OUTPUT
+            else
+              echo "❌ Push failed"
+              echo "committed=false" >> $GITHUB_OUTPUT
+              exit 1
+            fi
+          else
+            echo "❌ Commit failed"
+            echo "committed=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+        fi
+        echo "=================================================="
+        
+    - name: 📈 Final summary
+      if: always()
+      run: |
+        echo "=================================================="
+        echo "📈 FINAL WORKFLOW SUMMARY"
+        echo "=================================================="
+        echo "🕒 Workflow completed at: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+        echo "⏱️  Total runtime: ${{ github.event_name }} trigger"
+        
+        if [ -f "$PROGRESS_FILE" ]; then
+          FINAL_PROGRESS=$(cat $PROGRESS_FILE)
+          echo "📅 Final progress: $FINAL_PROGRESS"
+          echo "➡️  Next run will process: $FINAL_PROGRESS"
+          
+          # Calculate some stats
+          START_DATE="1990-01-01"
+          CURRENT_DATE="$FINAL_PROGRESS"
+          echo "📊 Processing Statistics:"
+          echo "   🎯 Started from: $START_DATE"
+          echo "   📍 Current position: $CURRENT_DATE"
+        else
+          echo "❌ No progress file found"
+        fi
+        
+        echo ""
+        echo "🔄 Processing Status:"
+        echo "   ✨ Processor success: ${{ steps.process.outputs.success || 'unknown' }}"
+        echo "   💾 Commit success: ${{ steps.commit.outputs.committed || 'unknown' }}"
+        
+        echo ""
+        echo "⏰ Next scheduled run: Every 30 minutes"
+        echo "🔧 Manual trigger: Available in Actions tab"
+        echo "=================================================="
+        
+    - name: 🚨 Failure notification
+      if: failure()
+      run: |
+        echo "=================================================="
+        echo "🚨 WORKFLOW FAILED"
+        echo "=================================================="
+        echo "❌ The crossword processing workflow has failed"
+        echo "🕒 Failure time: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+        echo "🔗 Check the workflow logs for details"
+        echo "📧 Consider checking email credentials in secrets"
+        echo "🌐 Verify crossword data source availability"
+        echo "=================================================="
+
+    - name: 🎉 Success notification  
+      if: success()
+      run: |
+        echo "=================================================="
+        echo "🎉 WORKFLOW COMPLETED SUCCESSFULLY"
+        echo "=================================================="
+        echo "✅ Crossword processing completed successfully"
+        echo "🕒 Success time: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+        if [ -f "$PROGRESS_FILE" ]; then
+          echo "📅 Progress updated to: $(cat $PROGRESS_FILE)"
+        fi
+        echo "⏰ Next run scheduled in 30 minutes"
+        echo "=================================================="\n'"- Date processed: $CURRENT_PROGRESS"
+          
+          echo "📋 Commit message prepared"
+          
+          # Commit the changes
+          if git commit -m "$COMMIT_MSG"; then
+            echo "✅ Commit created successfully"
+            
+            # Push the changes
+            echo "🚀 Pushing to remote repository..."
+            if git push origin HEAD; then
+              echo "✅ Push successful"
+              echo "committed=true" >> $GITHUB_OUTPUT
+            else
+              echo "❌ Push failed"
+              echo "committed=false" >> $GITHUB_OUTPUT
+              exit 1
+            fi
+          else
+            echo "❌ Commit failed"
+            echo "committed=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+        fi
+        echo "=================================================="
+        
+    - name: 📈 Final summary
+      if: always()
+      run: |
+        echo "=================================================="
+        echo "📈 FINAL WORKFLOW SUMMARY"
+        echo "=================================================="
+        echo "🕒 Workflow completed at: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+        echo "⏱️  Total runtime: ${{ github.event_name }} trigger"
+        
+        if [ -f "$PROGRESS_FILE" ]; then
+          FINAL_PROGRESS=$(cat $PROGRESS_FILE)
+          echo "📅 Final progress: $FINAL_PROGRESS"
+          echo "➡️  Next run will process: $FINAL_PROGRESS"
+          
+          # Calculate some stats
+          START_DATE="1990-01-01"
+          CURRENT_DATE="$FINAL_PROGRESS"
+          echo "📊 Processing Statistics:"
+          echo "   🎯 Started from: $START_DATE"
+          echo "   📍 Current position: $CURRENT_DATE"
+        else
+          echo "❌ No progress file found"
+        fi
+        
+        echo ""
+        echo "🔄 Processing Status:"
+        echo "   ✨ Processor success: ${{ steps.process.outputs.success || 'unknown' }}"
+        echo "   💾 Commit success: ${{ steps.commit.outputs.committed || 'unknown' }}"
+        
+        echo ""
+        echo "⏰ Next scheduled run: Every 30 minutes"
+        echo "🔧 Manual trigger: Available in Actions tab"
+        echo "=================================================="
+        
+    - name: 🚨 Failure notification
+      if: failure()
+      run: |
+        echo "=================================================="
+        echo "🚨 WORKFLOW FAILED"
+        echo "=================================================="
+        echo "❌ The crossword processing workflow has failed"
+        echo "🕒 Failure time: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+        echo "🔗 Check the workflow logs for details"
+        echo "📧 Consider checking email credentials in secrets"
+        echo "🌐 Verify crossword data source availability"
+        echo "=================================================="
+
+    - name: 🎉 Success notification  
+      if: success()
+      run: |
+        echo "=================================================="
+        echo "🎉 WORKFLOW COMPLETED SUCCESSFULLY"
+        echo "=================================================="
+        echo "✅ Crossword processing completed successfully"
+        echo "🕒 Success time: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+        if [ -f "$PROGRESS_FILE" ]; then
+          echo "📅 Progress updated to: $(cat $PROGRESS_FILE)"
+        fi
+        echo "⏰ Next run scheduled in 30 minutes"
+        echo "=================================================="\n'"- Timestamp: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+          
+          echo "📋 Commit message prepared"
+          
+          # Commit the changes
+          if git commit -m "$COMMIT_MSG"; then
+            echo "✅ Commit created successfully"
+            
+            # Push the changes
+            echo "🚀 Pushing to remote repository..."
+            if git push origin HEAD; then
+              echo "✅ Push successful"
+              echo "committed=true" >> $GITHUB_OUTPUT
+            else
+              echo "❌ Push failed"
+              echo "committed=false" >> $GITHUB_OUTPUT
+              exit 1
+            fi
+          else
+            echo "❌ Commit failed"
+            echo "committed=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+        fi
+        echo "=================================================="
+        
+    - name: 📈 Final summary
+      if: always()
+      run: |
+        echo "=================================================="
+        echo "📈 FINAL WORKFLOW SUMMARY"
+        echo "=================================================="
+        echo "🕒 Workflow completed at: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+        echo "⏱️  Total runtime: ${{ github.event_name }} trigger"
+        
+        if [ -f "$PROGRESS_FILE" ]; then
+          FINAL_PROGRESS=$(cat $PROGRESS_FILE)
+          echo "📅 Final progress: $FINAL_PROGRESS"
+          echo "➡️  Next run will process: $FINAL_PROGRESS"
+          
+          # Calculate some stats
+          START_DATE="1990-01-01"
+          CURRENT_DATE="$FINAL_PROGRESS"
+          echo "📊 Processing Statistics:"
+          echo "   🎯 Started from: $START_DATE"
+          echo "   📍 Current position: $CURRENT_DATE"
+        else
+          echo "❌ No progress file found"
+        fi
+        
+        echo ""
+        echo "🔄 Processing Status:"
+        echo "   ✨ Processor success: ${{ steps.process.outputs.success || 'unknown' }}"
+        echo "   💾 Commit success: ${{ steps.commit.outputs.committed || 'unknown' }}"
+        
+        echo ""
+        echo "⏰ Next scheduled run: Every 30 minutes"
+        echo "🔧 Manual trigger: Available in Actions tab"
+        echo "=================================================="
+        
+    - name: 🚨 Failure notification
+      if: failure()
+      run: |
+        echo "=================================================="
+        echo "🚨 WORKFLOW FAILED"
+        echo "=================================================="
+        echo "❌ The crossword processing workflow has failed"
+        echo "🕒 Failure time: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+        echo "🔗 Check the workflow logs for details"
+        echo "📧 Consider checking email credentials in secrets"
+        echo "🌐 Verify crossword data source availability"
+        echo "=================================================="
+
+    - name: 🎉 Success notification  
+      if: success()
+      run: |
+        echo "=================================================="
+        echo "🎉 WORKFLOW COMPLETED SUCCESSFULLY"
+        echo "=================================================="
+        echo "✅ Crossword processing completed successfully"
+        echo "🕒 Success time: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+        if [ -f "$PROGRESS_FILE" ]; then
+          echo "📅 Progress updated to: $(cat $PROGRESS_FILE)"
+        fi
+        echo "⏰ Next run scheduled in 30 minutes"
+        echo "=================================================="\n'"- Workflow: ${{ github.workflow }}"
+          
+          echo "📋 Commit message prepared"
+          
+          # Commit the changes
+          if git commit -m "$COMMIT_MSG"; then
+            echo "✅ Commit created successfully"
+            
+            # Push the changes
+            echo "🚀 Pushing to remote repository..."
+            if git push origin HEAD; then
+              echo "✅ Push successful"
+              echo "committed=true" >> $GITHUB_OUTPUT
+            else
+              echo "❌ Push failed"
+              echo "committed=false" >> $GITHUB_OUTPUT
+              exit 1
+            fi
+          else
+            echo "❌ Commit failed"
+            echo "committed=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+        fi
+        echo "=================================================="
+        
+    - name: 📈 Final summary
+      if: always()
+      run: |
+        echo "=================================================="
+        echo "📈 FINAL WORKFLOW SUMMARY"
+        echo "=================================================="
+        echo "🕒 Workflow completed at: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+        echo "⏱️  Total runtime: ${{ github.event_name }} trigger"
+        
+        if [ -f "$PROGRESS_FILE" ]; then
+          FINAL_PROGRESS=$(cat $PROGRESS_FILE)
+          echo "📅 Final progress: $FINAL_PROGRESS"
+          echo "➡️  Next run will process: $FINAL_PROGRESS"
+          
+          # Calculate some stats
+          START_DATE="1990-01-01"
+          CURRENT_DATE="$FINAL_PROGRESS"
+          echo "📊 Processing Statistics:"
+          echo "   🎯 Started from: $START_DATE"
+          echo "   📍 Current position: $CURRENT_DATE"
+        else
+          echo "❌ No progress file found"
+        fi
+        
+        echo ""
+        echo "🔄 Processing Status:"
+        echo "   ✨ Processor success: ${{ steps.process.outputs.success || 'unknown' }}"
+        echo "   💾 Commit success: ${{ steps.commit.outputs.committed || 'unknown' }}"
+        
+        echo ""
+        echo "⏰ Next scheduled run: Every 30 minutes"
+        echo "🔧 Manual trigger: Available in Actions tab"
+        echo "=================================================="
+        
+    - name: 🚨 Failure notification
+      if: failure()
+      run: |
+        echo "=================================================="
+        echo "🚨 WORKFLOW FAILED"
+        echo "=================================================="
+        echo "❌ The crossword processing workflow has failed"
+        echo "🕒 Failure time: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+        echo "🔗 Check the workflow logs for details"
+        echo "📧 Consider checking email credentials in secrets"
+        echo "🌐 Verify crossword data source availability"
+        echo "=================================================="
+
+    - name: 🎉 Success notification  
+      if: success()
+      run: |
+        echo "=================================================="
+        echo "🎉 WORKFLOW COMPLETED SUCCESSFULLY"
+        echo "=================================================="
+        echo "✅ Crossword processing completed successfully"
+        echo "🕒 Success time: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+        if [ -f "$PROGRESS_FILE" ]; then
+          echo "📅 Progress updated to: $(cat $PROGRESS_FILE)"
+        fi
+        echo "⏰ Next run scheduled in 30 minutes"
+        echo "=================================================="\n'"- Run: ${{ github.run_number }}"
+          else
+            COMMIT_MSG="🤖 Crossword processing attempt"
+          
+          echo "📋 Commit message prepared"
+          
+          # Commit the changes
+          if git commit -m "$COMMIT_MSG"; then
+            echo "✅ Commit created successfully"
+            
+            # Push the changes
+            echo "🚀 Pushing to remote repository..."
+            if git push origin HEAD; then
+              echo "✅ Push successful"
+              echo "committed=true" >> $GITHUB_OUTPUT
+            else
+              echo "❌ Push failed"
+              echo "committed=false" >> $GITHUB_OUTPUT
+              exit 1
+            fi
+          else
+            echo "❌ Commit failed"
+            echo "committed=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+        fi
+        echo "=================================================="
+        
+    - name: 📈 Final summary
+      if: always()
+      run: |
+        echo "=================================================="
+        echo "📈 FINAL WORKFLOW SUMMARY"
+        echo "=================================================="
+        echo "🕒 Workflow completed at: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+        echo "⏱️  Total runtime: ${{ github.event_name }} trigger"
+        
+        if [ -f "$PROGRESS_FILE" ]; then
+          FINAL_PROGRESS=$(cat $PROGRESS_FILE)
+          echo "📅 Final progress: $FINAL_PROGRESS"
+          echo "➡️  Next run will process: $FINAL_PROGRESS"
+          
+          # Calculate some stats
+          START_DATE="1990-01-01"
+          CURRENT_DATE="$FINAL_PROGRESS"
+          echo "📊 Processing Statistics:"
+          echo "   🎯 Started from: $START_DATE"
+          echo "   📍 Current position: $CURRENT_DATE"
+        else
+          echo "❌ No progress file found"
+        fi
+        
+        echo ""
+        echo "🔄 Processing Status:"
+        echo "   ✨ Processor success: ${{ steps.process.outputs.success || 'unknown' }}"
+        echo "   💾 Commit success: ${{ steps.commit.outputs.committed || 'unknown' }}"
+        
+        echo ""
+        echo "⏰ Next scheduled run: Every 30 minutes"
+        echo "🔧 Manual trigger: Available in Actions tab"
+        echo "=================================================="
+        
+    - name: 🚨 Failure notification
+      if: failure()
+      run: |
+        echo "=================================================="
+        echo "🚨 WORKFLOW FAILED"
+        echo "=================================================="
+        echo "❌ The crossword processing workflow has failed"
+        echo "🕒 Failure time: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+        echo "🔗 Check the workflow logs for details"
+        echo "📧 Consider checking email credentials in secrets"
+        echo "🌐 Verify crossword data source availability"
+        echo "=================================================="
+
+    - name: 🎉 Success notification  
+      if: success()
+      run: |
+        echo "=================================================="
+        echo "🎉 WORKFLOW COMPLETED SUCCESSFULLY"
+        echo "=================================================="
+        echo "✅ Crossword processing completed successfully"
+        echo "🕒 Success time: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+        if [ -f "$PROGRESS_FILE" ]; then
+          echo "📅 Progress updated to: $(cat $PROGRESS_FILE)"
+        fi
+        echo "⏰ Next run scheduled in 30 minutes"
+        echo "=================================================="\n\n'"Automated update from GitHub Actions"
+          
+          echo "📋 Commit message prepared"
+          
+          # Commit the changes
+          if git commit -m "$COMMIT_MSG"; then
+            echo "✅ Commit created successfully"
+            
+            # Push the changes
+            echo "🚀 Pushing to remote repository..."
+            if git push origin HEAD; then
+              echo "✅ Push successful"
+              echo "committed=true" >> $GITHUB_OUTPUT
+            else
+              echo "❌ Push failed"
+              echo "committed=false" >> $GITHUB_OUTPUT
+              exit 1
+            fi
+          else
+            echo "❌ Commit failed"
+            echo "committed=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+        fi
+        echo "=================================================="
+        
+    - name: 📈 Final summary
+      if: always()
+      run: |
+        echo "=================================================="
+        echo "📈 FINAL WORKFLOW SUMMARY"
+        echo "=================================================="
+        echo "🕒 Workflow completed at: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+        echo "⏱️  Total runtime: ${{ github.event_name }} trigger"
+        
+        if [ -f "$PROGRESS_FILE" ]; then
+          FINAL_PROGRESS=$(cat $PROGRESS_FILE)
+          echo "📅 Final progress: $FINAL_PROGRESS"
+          echo "➡️  Next run will process: $FINAL_PROGRESS"
+          
+          # Calculate some stats
+          START_DATE="1990-01-01"
+          CURRENT_DATE="$FINAL_PROGRESS"
+          echo "📊 Processing Statistics:"
+          echo "   🎯 Started from: $START_DATE"
+          echo "   📍 Current position: $CURRENT_DATE"
+        else
+          echo "❌ No progress file found"
+        fi
+        
+        echo ""
+        echo "🔄 Processing Status:"
+        echo "   ✨ Processor success: ${{ steps.process.outputs.success || 'unknown' }}"
+        echo "   💾 Commit success: ${{ steps.commit.outputs.committed || 'unknown' }}"
+        
+        echo ""
+        echo "⏰ Next scheduled run: Every 30 minutes"
+        echo "🔧 Manual trigger: Available in Actions tab"
+        echo "=================================================="
+        
+    - name: 🚨 Failure notification
+      if: failure()
+      run: |
+        echo "=================================================="
+        echo "🚨 WORKFLOW FAILED"
+        echo "=================================================="
+        echo "❌ The crossword processing workflow has failed"
+        echo "🕒 Failure time: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+        echo "🔗 Check the workflow logs for details"
+        echo "📧 Consider checking email credentials in secrets"
+        echo "🌐 Verify crossword data source availability"
+        echo "=================================================="
+
+    - name: 🎉 Success notification  
+      if: success()
+      run: |
+        echo "=================================================="
+        echo "🎉 WORKFLOW COMPLETED SUCCESSFULLY"
+        echo "=================================================="
+        echo "✅ Crossword processing completed successfully"
+        echo "🕒 Success time: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+        if [ -f "$PROGRESS_FILE" ]; then
+          echo "📅 Progress updated to: $(cat $PROGRESS_FILE)"
+        fi
+        echo "⏰ Next run scheduled in 30 minutes"
+        echo "=================================================="\n'"- Timestamp: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+          
+          echo "📋 Commit message prepared"
+          
+          # Commit the changes
+          if git commit -m "$COMMIT_MSG"; then
+            echo "✅ Commit created successfully"
+            
+            # Push the changes
+            echo "🚀 Pushing to remote repository..."
+            if git push origin HEAD; then
+              echo "✅ Push successful"
+              echo "committed=true" >> $GITHUB_OUTPUT
+            else
+              echo "❌ Push failed"
+              echo "committed=false" >> $GITHUB_OUTPUT
+              exit 1
+            fi
+          else
+            echo "❌ Commit failed"
+            echo "committed=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+        fi
+        echo "=================================================="
+        
+    - name: 📈 Final summary
+      if: always()
+      run: |
+        echo "=================================================="
+        echo "📈 FINAL WORKFLOW SUMMARY"
+        echo "=================================================="
+        echo "🕒 Workflow completed at: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+        echo "⏱️  Total runtime: ${{ github.event_name }} trigger"
+        
+        if [ -f "$PROGRESS_FILE" ]; then
+          FINAL_PROGRESS=$(cat $PROGRESS_FILE)
+          echo "📅 Final progress: $FINAL_PROGRESS"
+          echo "➡️  Next run will process: $FINAL_PROGRESS"
+          
+          # Calculate some stats
+          START_DATE="1990-01-01"
+          CURRENT_DATE="$FINAL_PROGRESS"
+          echo "📊 Processing Statistics:"
+          echo "   🎯 Started from: $START_DATE"
+          echo "   📍 Current position: $CURRENT_DATE"
+        else
+          echo "❌ No progress file found"
+        fi
+        
+        echo ""
+        echo "🔄 Processing Status:"
+        echo "   ✨ Processor success: ${{ steps.process.outputs.success || 'unknown' }}"
+        echo "   💾 Commit success: ${{ steps.commit.outputs.committed || 'unknown' }}"
+        
+        echo ""
+        echo "⏰ Next scheduled run: Every 30 minutes"
+        echo "🔧 Manual trigger: Available in Actions tab"
+        echo "=================================================="
+        
+    - name: 🚨 Failure notification
+      if: failure()
+      run: |
+        echo "=================================================="
+        echo "🚨 WORKFLOW FAILED"
+        echo "=================================================="
+        echo "❌ The crossword processing workflow has failed"
+        echo "🕒 Failure time: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+        echo "🔗 Check the workflow logs for details"
+        echo "📧 Consider checking email credentials in secrets"
+        echo "🌐 Verify crossword data source availability"
+        echo "=================================================="
+
+    - name: 🎉 Success notification  
+      if: success()
+      run: |
+        echo "=================================================="
+        echo "🎉 WORKFLOW COMPLETED SUCCESSFULLY"
+        echo "=================================================="
+        echo "✅ Crossword processing completed successfully"
+        echo "🕒 Success time: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+        if [ -f "$PROGRESS_FILE" ]; then
+          echo "📅 Progress updated to: $(cat $PROGRESS_FILE)"
+        fi
+        echo "⏰ Next run scheduled in 30 minutes"
+        echo "=================================================="\n'"- Workflow: ${{ github.workflow }}"
+          
+          echo "📋 Commit message prepared"
+          
+          # Commit the changes
+          if git commit -m "$COMMIT_MSG"; then
+            echo "✅ Commit created successfully"
+            
+            # Push the changes
+            echo "🚀 Pushing to remote repository..."
+            if git push origin HEAD; then
+              echo "✅ Push successful"
+              echo "committed=true" >> $GITHUB_OUTPUT
+            else
+              echo "❌ Push failed"
+              echo "committed=false" >> $GITHUB_OUTPUT
+              exit 1
+            fi
+          else
+            echo "❌ Commit failed"
+            echo "committed=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+        fi
+        echo "=================================================="
+        
+    - name: 📈 Final summary
+      if: always()
+      run: |
+        echo "=================================================="
+        echo "📈 FINAL WORKFLOW SUMMARY"
+        echo "=================================================="
+        echo "🕒 Workflow completed at: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+        echo "⏱️  Total runtime: ${{ github.event_name }} trigger"
+        
+        if [ -f "$PROGRESS_FILE" ]; then
+          FINAL_PROGRESS=$(cat $PROGRESS_FILE)
+          echo "📅 Final progress: $FINAL_PROGRESS"
+          echo "➡️  Next run will process: $FINAL_PROGRESS"
+          
+          # Calculate some stats
+          START_DATE="1990-01-01"
+          CURRENT_DATE="$FINAL_PROGRESS"
+          echo "📊 Processing Statistics:"
+          echo "   🎯 Started from: $START_DATE"
+          echo "   📍 Current position: $CURRENT_DATE"
+        else
+          echo "❌ No progress file found"
+        fi
+        
+        echo ""
+        echo "🔄 Processing Status:"
+        echo "   ✨ Processor success: ${{ steps.process.outputs.success || 'unknown' }}"
+        echo "   💾 Commit success: ${{ steps.commit.outputs.committed || 'unknown' }}"
+        
+        echo ""
+        echo "⏰ Next scheduled run: Every 30 minutes"
+        echo "🔧 Manual trigger: Available in Actions tab"
+        echo "=================================================="
+        
+    - name: 🚨 Failure notification
+      if: failure()
+      run: |
+        echo "=================================================="
+        echo "🚨 WORKFLOW FAILED"
+        echo "=================================================="
+        echo "❌ The crossword processing workflow has failed"
+        echo "🕒 Failure time: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+        echo "🔗 Check the workflow logs for details"
+        echo "📧 Consider checking email credentials in secrets"
+        echo "🌐 Verify crossword data source availability"
+        echo "=================================================="
+
+    - name: 🎉 Success notification  
+      if: success()
+      run: |
+        echo "=================================================="
+        echo "🎉 WORKFLOW COMPLETED SUCCESSFULLY"
+        echo "=================================================="
+        echo "✅ Crossword processing completed successfully"
+        echo "🕒 Success time: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+        if [ -f "$PROGRESS_FILE" ]; then
+          echo "📅 Progress updated to: $(cat $PROGRESS_FILE)"
+        fi
+        echo "⏰ Next run scheduled in 30 minutes"
+        echo "=================================================="\n'"- Run: ${{ github.run_number }}"
           fi
           
           echo "📋 Commit message prepared"
