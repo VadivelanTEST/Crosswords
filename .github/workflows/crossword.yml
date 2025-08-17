@@ -28,11 +28,3 @@ jobs:
         EMAIL_USER: ${{ secrets.EMAIL_USER }}
         EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
       run: python crossword_processor.py
-      
-    - name: Commit progress
-      run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        git add crossword_progress.txt
-        git commit -m "Update crossword progress" || exit 0
-        git push
