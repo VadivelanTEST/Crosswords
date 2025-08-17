@@ -33,9 +33,7 @@ jobs:
       contents: write       # Required to commit progress file
       actions: read         # Required for actions
     
-    env:
-      EMAIL_USER: ${{ secrets.EMAIL_USER }}
-      EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
+    env:     
       PROGRESS_FILE: crossword_progress.txt
       
     steps:
