@@ -1,8 +1,10 @@
 name: NYT Crossword Processor
+
 on:
   schedule:
     # Runs every 30 minutes
-    - cron: '*/30 * * * *'  
+    - cron: '*/30 * * * *'
+  
   # Allow manual triggering from GitHub UI
   workflow_dispatch:
     inputs:
@@ -29,8 +31,7 @@ jobs:
     
     permissions:
       contents: write       # Required to commit progress file
-      actions: read        # Required for actions
-      metadata: read       # Required for metadata
+      actions: read         # Required for actions
     
     env:
       EMAIL_USER: ${{ secrets.EMAIL_USER }}
