@@ -20,24 +20,56 @@ PROGRESS_FILE = "crossword_progress.txt"
 def get_current_progress():
     """Get the last processed date from progress file"""
     try:
+        # Check if file exists and has content
         if os.path.exists(PROGRESS_FILE):
-            with open(PROGRESS_FILE, 'r') as f:
-                last_date_str = f.read().strip()
-                if last_date_str:
-                    return datetime.strptime(last_date_str, '%Y-%m-%d')
-        return START_DATE
+            with open(PROGRESS_FILE, 'r', encoding='utf-8') as f:
+                content = f.read().strip()
+                print(f"📖 Reading progress file: '{content}'")
+                if content:
+                    try:
+                        parsed_date = datetime.strptime(content, '%Y-%m-%d')
+                        print(f"✅ Found last processed date: {parsed_date.strftime('%Y-%m-%d')}")
+                        return parsed_date
+                    except ValueError as ve:
+                        print(f"❌ Invalid date format in progress file: {ve}")
+                        return START_DATE
+                else:
+                    print("⚠️ Progress file is empty")
+                    return START_DATE
+        else:
+            print(f"📝 Progress file '{PROGRESS_FILE}' doesn't exist, starting from beginning")
+            return START_DATE
     except Exception as e:
-        print(f"Error reading progress file: {e}")
+        print(f"❌ Error reading progress file: {e}")
         return START_DATE
 
 def save_progress(date):
     """Save the current processed date to progress file"""
     try:
-        with open(PROGRESS_FILE, 'w') as f:
+        # Ensure the directory exists
+        os.makedirs(os.path.dirname(PROGRESS_FILE) if os.path.dirname(PROGRESS_FILE) else '.', exist_ok=True)
+        
+        # Write the date
+        with open(PROGRESS_FILE, 'w', encoding='utf-8') as f:
             f.write(date.strftime('%Y-%m-%d'))
-        print(f"✅ Progress saved: {date.strftime('%Y-%m-%d')}")
+        
+        # Verify the write was successful
+        if os.path.exists(PROGRESS_FILE):
+            with open(PROGRESS_FILE, 'r', encoding='utf-8') as f:
+                saved_content = f.read().strip()
+                if saved_content == date.strftime('%Y-%m-%d'):
+                    print(f"✅ Progress saved successfully: {date.strftime('%Y-%m-%d')}")
+                    return True
+                else:
+                    print(f"❌ Progress verification failed. Expected: {date.strftime('%Y-%m-%d')}, Got: {saved_content}")
+                    return False
+        else:
+            print(f"❌ Progress file was not created")
+            return False
+            
     except Exception as e:
         print(f"❌ Error saving progress: {e}")
+        return False
 
 def get_next_date():
     """Get the next date to process"""
@@ -330,6 +362,8 @@ def send_email(to_email, subject, html_content):
 # Main function - processes one date per run
 def main():
     print("🚀 Starting single date crossword processing...")
+    print(f"📁 Working directory: {os.getcwd()}")
+    print(f"📋 Progress file path: {os.path.abspath(PROGRESS_FILE)}")
     
     # Get next date to process
     target_date = get_next_date()
@@ -351,6 +385,9 @@ def main():
     # Fetch crossword data
     crossword_data = fetch_crossword_data(url)
     
+    # Always try to advance to next date, regardless of success/failure
+    next_date = target_date + timedelta(days=1)
+    
     if crossword_data:
         try:
             # Validate data structure
@@ -368,34 +405,37 @@ def main():
                     success = send_email("velanms1993.qrco@blogger.com", title, html_content)
                     
                     if success:
-                        # Save progress and move to next date
-                        next_date = target_date + timedelta(days=1)
-                        save_progress(next_date)
-                        
-                        print(f"📈 Progress: Completed {target_date.strftime('%Y-%m-%d')}")
-                        print(f"📅 Next run will process: {next_date.strftime('%Y-%m-%d')}")
+                        print(f"📈 Success: Completed {target_date.strftime('%Y-%m-%d')}")
                     else:
-                        print("❌ Email failed, progress not saved")
+                        print(f"❌ Email failed for {target_date.strftime('%Y-%m-%d')}")
                 else:
-                    print("❌ Failed to format HTML content")
-                    # Still advance the date to avoid getting stuck
-                    next_date = target_date + timedelta(days=1)
-                    save_progress(next_date)
+                    print(f"❌ Failed to format HTML for {target_date.strftime('%Y-%m-%d')}")
             else:
-                print("⚠️ Invalid crossword data structure")
-                # Skip this date
-                next_date = target_date + timedelta(days=1)
-                save_progress(next_date)
+                print(f"⚠️ Invalid crossword data structure for {target_date.strftime('%Y-%m-%d')}")
         except Exception as e:
-            print(f"❌ Error processing crossword data: {e}")
-            # Skip this date
-            next_date = target_date + timedelta(days=1)
-            save_progress(next_date)
+            print(f"❌ Error processing crossword data for {target_date.strftime('%Y-%m-%d')}: {e}")
     else:
-        print(f"⚠️ No crossword data for {crossword_date}")
-        # Skip this date
-        next_date = target_date + timedelta(days=1)
-        save_progress(next_date)
+        print(f"⚠️ No crossword data available for {target_date.strftime('%Y-%m-%d')}")
+    
+    # ALWAYS save progress to move to next date
+    print(f"💾 Saving progress to move to next date: {next_date.strftime('%Y-%m-%d')}")
+    save_success = save_progress(next_date)
+    
+    if save_success:
+        print(f"📅 Next run will process: {next_date.strftime('%A, %B %d, %Y')}")
+    else:
+        print(f"❌ Failed to save progress! Next run may repeat {target_date.strftime('%Y-%m-%d')}")
+    
+    # Show file status for debugging
+    try:
+        if os.path.exists(PROGRESS_FILE):
+            with open(PROGRESS_FILE, 'r', encoding='utf-8') as f:
+                current_content = f.read().strip()
+                print(f"📄 Current progress file content: '{current_content}'")
+        else:
+            print(f"📄 Progress file does not exist after save attempt")
+    except Exception as e:
+        print(f"❌ Error checking progress file: {e}")
 
 if __name__ == "__main__":
     main()
