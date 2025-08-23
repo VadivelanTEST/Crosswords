@@ -3,6 +3,7 @@ name: Run Python Script Every 30 Minutes
 on:
   schedule:
     - cron: '*/30 * * * *'  # Every 30 minutes (UTC time-la, IST 5:30 hours ahead adjust pannu)
+  workflow_dispatch:  # allows manual trigger too
 
 jobs:
   run-script-and-commit:
