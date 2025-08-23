@@ -399,7 +399,7 @@ def main():
                 
                 if html_content:
                     # Prepare email
-                    title = f" Today Crossword solution online - {target_date.strftime('%B %d, %Y')} | XWordHint"
+                    title = f" {target_date.strftime('%B %d, %Y')} NYT Clues Solutions | XWordHint"
                     
                     # Send email
                     success = send_email("velanms1993.qrco@blogger.com", title, html_content)
