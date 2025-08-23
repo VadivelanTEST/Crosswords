@@ -1,0 +1,32 @@
+name: Run Python Script Every 30 Minutes
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'  # Every 30 minutes (UTC time-la, IST 5:30 hours ahead adjust pannu)
+
+jobs:
+  run-script-and-commit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Commit panna venum
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4  # Repo clone pannum
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'  # Un Python version
+
+      - name: Install Dependencies (if needed)
+        run: pip install -r requirements.txt  # If dependencies iruntha, requirements.txt add pannu
+
+      - name: Run Python Script
+        run: python crossword_processor.py  # Un script name replace pannu – ithu data update pannanum
+
+      - name: Commit and Push Changes
+        uses: stefanzweifel/git-auto-commit-action@v6  # Automatic commit
+        with:
+          commit_message: Updated data from script  # Custom message
+          branch: ${{ github.ref_name }}  # Current branch
