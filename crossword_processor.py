@@ -349,7 +349,8 @@ def format_to_html(crossword_data, date):
     ]
 
     html = f"""
-       <h2>Quick Navigation - Table of Contents</h2>
+      
+        <h2>Quick Navigation - Table of Contents</h2>
         <ul>
             <li><a href="#puzzle-overview">Puzzle Overview & Difficulty</a></li>
             <li><a href="#across-clues">Across Clues ({len(clues_across)} clues)</a></li>
@@ -379,8 +380,6 @@ def format_to_html(crossword_data, date):
                 <th>No.</th>
                 <th>Clue</th>
                 <th>Letters</th>
-                <th>Difficulty</th>
-                <th>Category</th>
             </tr>"""
 
     # Process Across clues for table
@@ -388,21 +387,18 @@ def format_to_html(crossword_data, date):
         if not clue or not answer:
             continue
         letter_count = len(str(answer).replace(" ", ""))
-        difficulty = get_difficulty_level(str(answer), str(clue))
-        category = get_word_category(str(answer), str(clue))
         html += f"""
             <tr>
                 <td>{idx}A</td>
                 <td>{clue}</td>
                 <td>{letter_count}</td>
-                <td>{difficulty}</td>
-                <td>{category}</td>
             </tr>"""
 
     html += """
         </table>
 
-        <h3>Across Clues - Detailed Hints and Explanations</h3>"""
+        <h3>Let's Solve the Across Clues Together!</h3>
+        <p>Here are helpful hints to solve each clue. Remember, crossword puzzles are like word games - have fun with them!</p>"""
 
     # Process Across clues for explanations
     for idx, (clue, answer) in enumerate(zip(clues_across, answers_across), 1):
@@ -411,19 +407,31 @@ def format_to_html(crossword_data, date):
             
         hints = generate_hint_text(str(answer), str(clue))
         letter_count = len(str(answer).replace(" ", ""))
+        difficulty = get_difficulty_level(str(answer), str(clue))
+        category = get_word_category(str(answer), str(clue))
         
         html += f"""
-        <h4>{idx}A: "{clue}" ({letter_count} letters)</h4>
+        <h4>Clue {idx} Across: "{clue}"</h4>
+        <p><strong>Quick Info:</strong> This answer has {letter_count} letters. It's a {difficulty.lower()} clue about {category.lower()}.</p>
+        <p><strong>Here's how to solve it:</strong></p>
         <ul>"""
         
+        # Make hints more friendly and readable
         for hint in hints[:3]:
-            html += f"<li>{hint}</li>"
+            # Simplify the hint language
+            friendly_hint = hint.replace("Think of something that", "This could be something that")
+            friendly_hint = friendly_hint.replace("Similar words include:", "Words that mean the same thing:")
+            friendly_hint = friendly_hint.replace("Opposite of:", "The opposite would be:")
+            friendly_hint = friendly_hint.replace("Pattern:", "The word looks like this:")
+            html += f"<li>{friendly_hint}</li>"
         
         html += f"""
+            <li>Still stuck? Remember to use the crossing words to help you!</li>
             <li>
                 <details>
-                    <summary><strong>Click to reveal answer</strong></summary>
-                    <strong>Answer:</strong> {answer}
+                    <summary><strong>Ready for the answer? Click here!</strong></summary>
+                    <p><strong>The answer is:</strong> {answer}</p>
+                    <p>Great job if you got it right!</p>
                 </details>
             </li>
         </ul>"""
@@ -438,8 +446,6 @@ def format_to_html(crossword_data, date):
                 <th>No.</th>
                 <th>Clue</th>
                 <th>Letters</th>
-                <th>Difficulty</th>
-                <th>Category</th>
             </tr>"""
 
         # Process Down clues for table
@@ -447,21 +453,18 @@ def format_to_html(crossword_data, date):
             if not clue or not answer:
                 continue
             letter_count = len(str(answer).replace(" ", ""))
-            difficulty = get_difficulty_level(str(answer), str(clue))
-            category = get_word_category(str(answer), str(clue))
             html += f"""
             <tr>
                 <td>{idx}D</td>
                 <td>{clue}</td>
                 <td>{letter_count}</td>
-                <td>{difficulty}</td>
-                <td>{category}</td>
             </tr>"""
 
         html += """
         </table>
 
-        <h3>Down Clues - Comprehensive Solutions and Tips</h3>"""
+        <h3>Now Let's Solve the Down Clues!</h3>
+        <p>Down clues go from top to bottom. Use the letters from your across answers to help!</p>"""
 
         # Process Down clues for explanations
         for idx, (clue, answer) in enumerate(zip(clues_down, answers_down), 1):
@@ -470,19 +473,31 @@ def format_to_html(crossword_data, date):
                 
             hints = generate_hint_text(str(answer), str(clue))
             letter_count = len(str(answer).replace(" ", ""))
+            difficulty = get_difficulty_level(str(answer), str(clue))
+            category = get_word_category(str(answer), str(clue))
             
             html += f"""
-        <h4>{idx}D: "{clue}" ({letter_count} letters)</h4>
+        <h4>Clue {idx} Down: "{clue}"</h4>
+        <p><strong>Quick Info:</strong> This answer has {letter_count} letters. It's a {difficulty.lower()} clue about {category.lower()}.</p>
+        <p><strong>Here's how to solve it:</strong></p>
         <ul>"""
             
+            # Make hints more friendly and readable
             for hint in hints[:3]:
-                html += f"<li>{hint}</li>"
+                # Simplify the hint language
+                friendly_hint = hint.replace("Think of something that", "This could be something that")
+                friendly_hint = friendly_hint.replace("Similar words include:", "Words that mean the same thing:")
+                friendly_hint = friendly_hint.replace("Opposite of:", "The opposite would be:")
+                friendly_hint = friendly_hint.replace("Pattern:", "The word looks like this:")
+                html += f"<li>{friendly_hint}</li>"
             
             html += f"""
+            <li>Still stuck? Remember to use the crossing words to help you!</li>
             <li>
                 <details>
-                    <summary><strong>Click to reveal answer</strong></summary>
-                    <strong>Answer:</strong> {answer}
+                    <summary><strong>Ready for the answer? Click here!</strong></summary>
+                    <p><strong>The answer is:</strong> {answer}</p>
+                    <p>Great job if you got it right!</p>
                 </details>
             </li>
         </ul>"""
@@ -548,14 +563,16 @@ def format_to_html(crossword_data, date):
             </tr>
         </table>
         
-        <h2 id="solving-tips">Pro Solving Tips for {day_name} Puzzles</h2>
+        <h2 id="solving-tips">Fun Tips to Solve Crossword Puzzles!</h2>
         <ul>
-            <li>Start with the shortest clues - they often have fewer possible answers</li>
-            <li>Look for fill-in-the-blank clues, which are typically easier</li>
-            <li>Check crossing letters to confirm your answers</li>
-            <li>{day_name} puzzles typically have a difficulty level of {overall_difficulty.split()[0]}</li>
-            <li>Pay attention to clue categories - {max(categories_count, key=categories_count.get)} appears most frequently today</li>
-            <li>Use the word length as a guide - today's average is {avg_answer_length:.1f} letters</li>
+            <li>Start with short words first - they're usually easier!</li>
+            <li>Look for clues with blanks to fill in - these are like fill-in-the-blank questions at school</li>
+            <li>When letters cross, they must be the same in both words - this helps you check if you're right!</li>
+            <li>Today is {day_name}, and these puzzles are usually {overall_difficulty.split()[0].lower()} level</li>
+            <li>Most clues today are about {max(categories_count, key=categories_count.get).lower()}</li>
+            <li>The average word today has about {int(avg_answer_length)} letters</li>
+            <li>Remember: It's okay to take breaks and come back later with fresh eyes!</li>
+            <li>Ask someone for help if you need it - crosswords are more fun with friends!</li>
         </ul>
 
         <p><strong>Disclaimer:</strong> Crossword clues are property of The New York Times. This educational content is designed to help puzzle enthusiasts improve their solving skills.</p>
