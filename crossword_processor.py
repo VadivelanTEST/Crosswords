@@ -349,9 +349,7 @@ def format_to_html(crossword_data, date):
     ]
 
     html = f"""
-        <h1>NYT Crossword Answers for {date.strftime('%B %d, %Y')} - {day_name} Puzzle</h1>
-        
-        <h2>Quick Navigation - Table of Contents</h2>
+       <h2>Quick Navigation - Table of Contents</h2>
         <ul>
             <li><a href="#puzzle-overview">Puzzle Overview & Difficulty</a></li>
             <li><a href="#across-clues">Across Clues ({len(clues_across)} clues)</a></li>
