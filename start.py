@@ -304,6 +304,7 @@ def format_to_html(crossword_data, date):
             html += f"<li>{hint}</li>"
         
         html += f"""</ul>
+        
                         <details class="answer-reveal">
                             <summary>Click to reveal answer (spoiler alert!)</summary>
                             <div class="answer-container">
@@ -363,6 +364,7 @@ def format_to_html(crossword_data, date):
             html += f"<li>{hint}</li>"
         
         html += f"""</ul>
+        
                         <details class="answer-reveal">
                             <summary> Click to reveal answer (spoiler alert!)</summary>
                             <div class="answer-container">
