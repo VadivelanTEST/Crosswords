@@ -434,67 +434,7 @@ def format_to_html(crossword_data, date):
         <footer>
             <p><strong>Disclaimer:</strong> Crossword clues and grid © The New York Times. This site provides hints and educational content for puzzle enthusiasts. XWordHint is not affiliated with The New York Times.</p>
             <p class="update-info">Last updated: {datetime.now().strftime('%B %d, %Y at %I:%M %p')}</p>
-        </footer>     
-        <style>            
-            .clue-item {{ margin-bottom: 25px; border: 1px solid #ddd; padding: 15px; border-radius: 8px; }}
-            .hint-list {{ background: #f9f9f9; padding: 15px; border-radius: 5px; }}
-            .answer-reveal {{ margin-top: 10px; }}
-            .answer-container {{ background: #fffacd; padding: 10px; border-radius: 5px; margin-top: 10px; }}
-            .strategy-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }}
-            .strategy-item {{ background: #f0f8ff; padding: 20px; border-radius: 8px; }}
-            .stats-container {{ display: flex; justify-content: space-around; background: #f5f5f5; padding: 20px; border-radius: 8px; }}
-            .stat-item {{ text-align: center; }}
-            .stat-number {{ display: block; font-size: 2em; font-weight: bold; color: #2c3e50; }}
-        </style>
-
-        <script>
-            // Grid interaction functionality
-            document.addEventListener('DOMContentLoaded', function() {{
-                const revealBtn = document.getElementById('reveal-grid');
-                const clearBtn = document.getElementById('clear-grid');
-                const letterInputs = document.querySelectorAll('.letter-input');
-                
-                // Store the answers for reveal functionality
-                const answers = {json.dumps(crossword_data.get('answers', {}))};                
-                if (revealBtn) {{
-                    revealBtn.addEventListener('click', function() {{
-                        if (confirm('Are you sure you want to reveal the complete grid? This will show all answers!')) {{
-                            // Enable all inputs and fill with answers
-                            letterInputs.forEach(input => {{
-                                input.disabled = false;
-                                // Logic to fill answers would go here
-                            }});
-                            this.textContent = 'Grid Revealed!';
-                            this.disabled = true;
-                        }}
-                    }});
-                }}
-                
-                if (clearBtn) {{
-                    clearBtn.addEventListener('click', function() {{
-                        letterInputs.forEach(input => {{
-                            input.value = '';
-                        }});
-                    }});
-                }}
-                
-                // Click on grid cells to highlight related clues
-                document.querySelectorAll('.white-cell').forEach(cell => {{
-                    cell.addEventListener('click', function() {{
-                        // Remove previous highlights
-                        document.querySelectorAll('.highlighted-clue').forEach(el => {{
-                            el.classList.remove('highlighted-clue');
-                        }});
-                        
-                        // Add highlight effect
-                        this.style.backgroundColor = '#fff3cd';
-                        setTimeout(() => {{
-                            this.style.backgroundColor = '';
-                        }}, 2000);
-                    }});
-                }});
-            }});
-        </script>
+        </footer>
     """
 
     return html
