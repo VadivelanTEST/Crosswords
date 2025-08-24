@@ -199,10 +199,6 @@ def format_to_html(crossword_data, date):
         return None
 
     html = f"""    
-        <header>
-            <p class="post-meta">Published on {date.strftime('%A, %B %d, %Y')} • Daily puzzle hints • <em>Crossword clues © The New York Times</em></p>
-        </header>
-
         <section aria-label="Crossword Solution Overview">
             <p itemprop="description">Master the NYT crossword from {date.strftime('%B %d, %Y')} with our expert hint system. We provide synonyms, antonyms, and strategic clues to help you solve without spoiling the fun.</p>
         </section>  
