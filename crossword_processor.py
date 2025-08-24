@@ -17,36 +17,6 @@ nltk.download('wordnet')
 START_DATE = datetime(1990, 1, 1)
 PROGRESS_FILE = "crossword_progress.txt"
 
-# List of available images
-CROSSWORD_IMAGES = [
-    "crossword-solution-keyword-optimized.png",
-    "crossword-solution-search-engine-friendly.png",
-    "crossword-solution-content-marketing.png",
-    "crossword-solution-digital-strategy.png",
-    "crossword-solution-on-page-seo.png",
-    "crossword-solution-link-building.png",
-    "crossword-solution-organic-traffic.png",
-    "crossword-solution-backlink-analysis.png",
-    "crossword-solution-seo-audit.png",
-    "crossword-solution-page-speed-optimization.png",
-    "crossword-solution-meta-description.png",
-    "crossword-solution-keyword-density.png",
-    "crossword-solution-mobile-friendliness.png",
-    "crossword-solution-rich-snippets.png",
-    "crossword-solution-technical-seo.png",
-    "crossword-solution-site-architecture.png",
-    "crossword-solution-search-console.png",
-    "crossword-solution-local-seo.png",
-    "crossword-solution-seo-tools.png",
-    "crossword-solution-content-update.png",
-    "crossword-solution-rank-tracking.png",
-    "crossword-solution-schema-markup.png",
-    "crossword-solution-user-experience.png",
-    "crossword-solution-search-ranking.png",
-    "crossword-solution-seo-report.png",
-    "crossword-solution-google-analytics.png"
-]
-
 def get_current_progress():
     """Get the last processed date from progress file"""
     try:
@@ -214,11 +184,6 @@ def fetch_crossword_data(url):
         print(f"Exception occurred: {e}")
     return None
 
-def get_random_image():
-    """Get a random crossword image"""
-    selected_image = random.choice(CROSSWORD_IMAGES)
-    return f"https://raw.githubusercontent.com/xwordhint/answer/main/{selected_image}"
-
 def format_to_html(crossword_data, date):
     # Safety checks
     if not crossword_data or 'clues' not in crossword_data or 'answers' not in crossword_data:
@@ -233,318 +198,199 @@ def format_to_html(crossword_data, date):
         print("No valid crossword data found")
         return None
 
-    # Get random image
-    image_url = get_random_image()
-    date_formatted = date.strftime('%B %d, %Y')
+    # List of available images for random selection
+    image_names = [
+        'crossword-solution-keyword-optimized.png',
+        'crossword-solution-search-engine-friendly.png',
+        'crossword-solution-content-marketing.png',
+        'crossword-solution-digital-strategy.png',
+        'crossword-solution-on-page-seo.png',
+        'crossword-solution-link-building.png',
+        'crossword-solution-organic-traffic.png',
+        'crossword-solution-backlink-analysis.png',
+        'crossword-solution-seo-audit.png',
+        'crossword-solution-page-speed-optimization.png',
+        'crossword-solution-meta-description.png',
+        'crossword-solution-keyword-density.png',
+        'crossword-solution-mobile-friendliness.png',
+        'crossword-solution-rich-snippets.png',
+        'crossword-solution-technical-seo.png',
+        'crossword-solution-site-architecture.png',
+        'crossword-solution-search-console.png',
+        'crossword-solution-local-seo.png',
+        'crossword-solution-seo-tools.png',
+        'crossword-solution-content-update.png',
+        'crossword-solution-rank-tracking.png',
+        'crossword-solution-schema-markup.png',
+        'crossword-solution-user-experience.png',
+        'crossword-solution-search-ranking.png',
+        'crossword-solution-seo-report.png',
+        'crossword-solution-google-analytics.png'
+    ]
+    
+    # Select a random image
+    selected_image = random.choice(image_names)
+    image_url = f"https://raw.githubusercontent.com/xwordhint/answer/main/{selected_image}"
+    
+    # SEO header variations for Across
+    across_headers = [
+        f"NYT Crossword Across Clues and Answers - {date.strftime('%B %d, %Y')}",
+        f"Today's Across Hints: {date.strftime('%B %d, %Y')} NYT Crossword Solutions",
+        f"Across Clues Explained - NYT Crossword {date.strftime('%B %d, %Y')}",
+        f"Master the Across: NYT Crossword Hints for {date.strftime('%B %d, %Y')}",
+        f"{date.strftime('%B %d, %Y')} NYT Crossword - Complete Across Solutions"
+    ]
+    
+    # SEO header variations for Down
+    down_headers = [
+        f"NYT Crossword Down Clues and Solutions - {date.strftime('%B %d, %Y')}",
+        f"Down Clue Hints: {date.strftime('%B %d, %Y')} NYT Crossword Guide",
+        f"Down Clues Decoded - NYT Crossword {date.strftime('%B %d, %Y')}",
+        f"Solve the Down: NYT Crossword Help for {date.strftime('%B %d, %Y')}",
+        f"{date.strftime('%B %d, %Y')} NYT Crossword - All Down Answers"
+    ]
 
-    html = f"""    
-        <section aria-label="Crossword Solution Overview">
-            <p itemprop="description">Master the NYT crossword from {date_formatted} with our expert hint system. We provide synonyms, antonyms, and strategic clues to help you solve without spoiling the fun.</p>
-        </section>
+    html = f"""
+        <h2>Table of Contents</h2>
+        <ul>
+            <li><a href="#across-clues">Across Clues</a></li>
+            <li><a href="#down-clues">Down Clues</a></li>
+            <li><a href="#puzzle-stats">Puzzle Statistics</a></li>
+        </ul>
 
-        <!-- Featured Image -->
         <div class="separator" style="clear: both; text-align: center;">
             <a href="{image_url}" style="margin-left: 1em; margin-right: 1em;">
-                <img alt="{date_formatted} NYT Clues Solutions" border="0" 
-                     data-original-height="514" data-original-width="509" 
-                     height="320" src="{image_url}" 
-                     title="{date_formatted} NYT Clues Solutions" width="317" />
+                <img alt="{date.strftime('%B %d, %Y')} NYT Clues Solutions" border="0" data-original-height="514" data-original-width="509" height="320" src="{image_url}" title="{date.strftime('%B %d, %Y')} NYT Clues Solutions" width="317" />
             </a>
         </div>
 
-        <!-- Table of Contents -->
-        <div class="table-of-contents">
-            <h2>📋 Table of Contents</h2>
-            <ul>
-                <li><a href="#puzzle-overview">Puzzle Overview</a></li>
-                <li><a href="#across-clues">Across Clues ({len(clues_across)} clues)</a></li>
-                <li><a href="#down-clues">Down Clues ({len(clues_down)} clues)</a></li>
-                <li><a href="#puzzle-stats">Puzzle Statistics</a></li>
-                <li><a href="#solving-tips">Pro Solving Tips</a></li>
-            </ul>
-        </div>
+        <h2 id="across-clues">{random.choice(across_headers)}</h2>
+        
+        <table border="1">
+            <tr>
+                <th>No.</th>
+                <th>Clue</th>
+                <th>Letters</th>
+            </tr>"""
 
-        <!-- Puzzle Overview -->
-        <section id="puzzle-overview" class="difficulty-indicator">
-            <h2>🧩 Puzzle Overview</h2>
-            <p><strong>Date:</strong> {date_formatted}</p>
-            <p><strong>Difficulty:</strong> {random.choice(['Moderate', 'Challenging', 'Medium', 'Tricky'])}</p>
-            <p><strong>Pro Tip:</strong> Start with the fill-in-the-blank clues - they're usually the easiest entry points!</p>
-        </section>
+    # Process Across clues for table
+    for idx, (clue, answer) in enumerate(zip(clues_across, answers_across), 1):
+        if not clue or not answer:
+            continue
+        letter_count = len(str(answer).replace(" ", ""))
+        html += f"""
+            <tr>
+                <td>{idx}A</td>
+                <td>{clue}</td>
+                <td>{letter_count}</td>
+            </tr>"""
 
-        <!-- Across Clues Table -->
-        <section id="across-clues" aria-label="Across Clues">
-            <h2>🔤 Across Clues</h2>
-            <table class="crossword-table">
-                <thead>
-                    <tr>
-                        <th>No.</th>
-                        <th>Clue</th>
-                        <th>Letters</th>
-                        <th>Hints</th>
-                        <th>Answer</th>
-                    </tr>
-                </thead>
-                <tbody>"""
+    html += """
+        </table>
 
-    # Process Across clues in table format
+        <h3>Across Clues - Detailed Hints and Explanations</h3>"""
+
+    # Process Across clues for explanations
     for idx, (clue, answer) in enumerate(zip(clues_across, answers_across), 1):
         if not clue or not answer:
             continue
             
-        letter_count = len(str(answer).replace(" ", ""))
         hints = generate_hint_text(str(answer), str(clue))
+        letter_count = len(str(answer).replace(" ", ""))
         
         html += f"""
-                    <tr>
-                        <td><strong>{idx}A</strong></td>
-                        <td>"{clue}"</td>
-                        <td>{letter_count}</td>
-                        <td>
-                            <ul class="hint-list">"""
+        <h4>{idx}A: "{clue}" ({letter_count} letters)</h4>
+        <ul>"""
         
         for hint in hints[:3]:
             html += f"<li>{hint}</li>"
         
         html += f"""
-                            </ul>
-                        </td>
-                        <td>
-                            <details class="answer-reveal">
-                                <summary>Reveal</summary>
-                                <span class="answer-text"><strong>{answer}</strong></span>
-                            </details>
-                        </td>
-                    </tr>"""
+            <li>
+                <details>
+                    <summary><strong>Click to reveal answer</strong></summary>
+                    <strong>Answer:</strong> {answer}
+                </details>
+            </li>
+        </ul>"""
 
-    html += """
-                </tbody>
-            </table>
-        </section>"""
-
-    # Process Down clues in table format
+    # Process Down clues
     if clues_down and answers_down:
         html += f"""
-        <section id="down-clues" aria-label="Down Clues">
-            <h2>🔽 Down Clues</h2>
-            <table class="crossword-table">
-                <thead>
-                    <tr>
-                        <th>No.</th>
-                        <th>Clue</th>
-                        <th>Letters</th>
-                        <th>Hints</th>
-                        <th>Answer</th>
-                    </tr>
-                </thead>
-                <tbody>"""
+        <h2 id="down-clues">{random.choice(down_headers)}</h2>
+        
+        <table border="1">
+            <tr>
+                <th>No.</th>
+                <th>Clue</th>
+                <th>Letters</th>
+            </tr>"""
 
+        # Process Down clues for table
+        for idx, (clue, answer) in enumerate(zip(clues_down, answers_down), 1):
+            if not clue or not answer:
+                continue
+            letter_count = len(str(answer).replace(" ", ""))
+            html += f"""
+            <tr>
+                <td>{idx}D</td>
+                <td>{clue}</td>
+                <td>{letter_count}</td>
+            </tr>"""
+
+        html += """
+        </table>
+
+        <h3>Down Clues - Comprehensive Solutions and Tips</h3>"""
+
+        # Process Down clues for explanations
         for idx, (clue, answer) in enumerate(zip(clues_down, answers_down), 1):
             if not clue or not answer:
                 continue
                 
-            letter_count = len(str(answer).replace(" ", ""))
             hints = generate_hint_text(str(answer), str(clue))
+            letter_count = len(str(answer).replace(" ", ""))
             
             html += f"""
-                        <tr>
-                            <td><strong>{idx}D</strong></td>
-                            <td>"{clue}"</td>
-                            <td>{letter_count}</td>
-                            <td>
-                                <ul class="hint-list">"""
+        <h4>{idx}D: "{clue}" ({letter_count} letters)</h4>
+        <ul>"""
             
             for hint in hints[:3]:
                 html += f"<li>{hint}</li>"
             
             html += f"""
-                                </ul>
-                            </td>
-                            <td>
-                                <details class="answer-reveal">
-                                    <summary>Reveal</summary>
-                                    <span class="answer-text"><strong>{answer}</strong></span>
-                                </details>
-                            </td>
-                        </tr>"""
+            <li>
+                <details>
+                    <summary><strong>Click to reveal answer</strong></summary>
+                    <strong>Answer:</strong> {answer}
+                </details>
+            </li>
+        </ul>"""
 
-        html += """
-                </tbody>
-            </table>
-        </section>"""
-
-    # Add puzzle stats and tips
+    # Add puzzle statistics
     html += f"""
-        <section id="puzzle-stats" aria-label="Daily Crossword Stats">
-            <h2>📊 Puzzle Statistics</h2>
-            <div class="stats-container">
-                <div class="stat-item">
-                    <span class="stat-number">{len(clues_across)}</span>
-                    <span class="stat-label">Across Clues</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number">{len(clues_down)}</span>
-                    <span class="stat-label">Down Clues</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number">{len(clues_across) + len(clues_down)}</span>
-                    <span class="stat-label">Total Clues</span>
-                </div>
-            </div>
-        </section>
+        <h2 id="puzzle-stats">Puzzle Statistics</h2>
+        <table border="1">
+            <tr>
+                <th>Category</th>
+                <th>Count</th>
+            </tr>
+            <tr>
+                <td>Across Clues</td>
+                <td>{len(clues_across)}</td>
+            </tr>
+            <tr>
+                <td>Down Clues</td>
+                <td>{len(clues_down)}</td>
+            </tr>
+            <tr>
+                <td>Total Clues</td>
+                <td>{len(clues_across) + len(clues_down)}</td>
+            </tr>
+        </table>
 
-        <section id="solving-tips">
-            <h2>💡 Pro Solving Tips</h2>
-            <ul>
-                <li><strong>Start with short words:</strong> 3-4 letter answers are often easier to guess</li>
-                <li><strong>Look for common prefixes/suffixes:</strong> UN-, RE-, -ING, -ED are frequent</li>
-                <li><strong>Fill-in-the-blank clues:</strong> These are usually your best starting points</li>
-                <li><strong>Cross-referencing:</strong> Use intersecting letters to verify your answers</li>
-                <li><strong>Theme awareness:</strong> Many puzzles have themed answers that relate to each other</li>
-            </ul>
-        </section>
-
-        <footer>
-            <p><strong>Disclaimer:</strong> Crossword clues © The New York Times. Educational content for puzzle enthusiasts.</p>
-            <p class="update-info">Processed: {datetime.now().strftime('%B %d, %Y at %I:%M %p')}</p>
-        </footer>
-
-        <style>
-            .table-of-contents {{
-                background: #f8f9fa;
-                padding: 20px;
-                border-radius: 8px;
-                margin: 20px 0;
-                border-left: 4px solid #007bff;
-            }}
-            .table-of-contents ul {{
-                list-style-type: none;
-                padding-left: 0;
-            }}
-            .table-of-contents li {{
-                margin: 8px 0;
-            }}
-            .table-of-contents a {{
-                text-decoration: none;
-                color: #007bff;
-                font-weight: 500;
-            }}
-            .table-of-contents a:hover {{
-                text-decoration: underline;
-            }}
-            
-            .crossword-table {{
-                width: 100%;
-                border-collapse: collapse;
-                margin: 20px 0;
-                background: white;
-                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            }}
-            .crossword-table th,
-            .crossword-table td {{
-                border: 1px solid #ddd;
-                padding: 12px;
-                text-align: left;
-                vertical-align: top;
-            }}
-            .crossword-table th {{
-                background: #f8f9fa;
-                font-weight: bold;
-                color: #333;
-            }}
-            .crossword-table tr:nth-child(even) {{
-                background-color: #f9f9f9;
-            }}
-            .crossword-table tr:hover {{
-                background-color: #e8f4f8;
-            }}
-            
-            .hint-list {{
-                margin: 0;
-                padding-left: 20px;
-                font-size: 0.9em;
-            }}
-            .hint-list li {{
-                margin: 4px 0;
-                color: #666;
-            }}
-            
-            .answer-reveal {{
-                margin: 0;
-            }}
-            .answer-reveal summary {{
-                cursor: pointer;
-                background: #e3f2fd;
-                padding: 6px 10px;
-                border-radius: 4px;
-                font-size: 0.9em;
-            }}
-            .answer-reveal summary:hover {{
-                background: #bbdefb;
-            }}
-            .answer-text {{
-                color: #d32f2f;
-                margin-top: 5px;
-                display: inline-block;
-            }}
-            
-            .stats-container {{
-                display: flex;
-                justify-content: space-around;
-                background: #f5f5f5;
-                padding: 20px;
-                border-radius: 8px;
-                margin: 20px 0;
-            }}
-            .stat-item {{
-                text-align: center;
-            }}
-            .stat-number {{
-                display: block;
-                font-size: 2.5em;
-                font-weight: bold;
-                color: #2c3e50;
-            }}
-            .stat-label {{
-                font-size: 0.9em;
-                color: #666;
-                text-transform: uppercase;
-            }}
-            
-            .difficulty-indicator {{
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                color: white;
-                padding: 20px;
-                border-radius: 8px;
-                margin: 20px 0;
-            }}
-            
-            section {{
-                margin: 30px 0;
-            }}
-            
-            footer {{
-                margin-top: 40px;
-                padding-top: 20px;
-                border-top: 1px solid #eee;
-                color: #666;
-                font-size: 0.9em;
-            }}
-            
-            .separator {{
-                margin: 20px 0;
-            }}
-            
-            @media (max-width: 768px) {{
-                .crossword-table {{
-                    font-size: 0.8em;
-                }}
-                .stats-container {{
-                    flex-direction: column;
-                    gap: 15px;
-                }}
-            }}
-        </style>
+        <p><strong>Disclaimer:</strong> Crossword clues © The New York Times. Educational content for puzzle enthusiasts.</p>
+        <p>Last Updated: {datetime.now().strftime('%B %d, %Y at %I:%M %p')}</p>
     """
 
     return html
