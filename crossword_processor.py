@@ -13,8 +13,9 @@ import random
 # Download wordnet
 nltk.download('wordnet')
 
-# Configuration for GitHub Actions
-START_DATE = datetime(1990, 1, 1)
+# Configuration for GitHub Actions - Reverse chronological order
+START_DATE = datetime(2024, 7, 20)  # Starting from recent date
+END_DATE = datetime(1990, 2, 1)  # Going back to Feb 1, 1990
 PROGRESS_FILE = "crossword_progress.txt"
 
 def get_current_progress():
@@ -72,13 +73,13 @@ def save_progress(date):
         return False
 
 def get_next_date():
-    """Get the next date to process"""
+    """Get the next date to process (going backwards in time)"""
     last_processed = get_current_progress()
     next_date = last_processed
     
     # Skip Sundays (NYT doesn't publish crosswords on Sundays)
     while next_date.weekday() == 6:  # 6 = Sunday
-        next_date += timedelta(days=1)
+        next_date -= timedelta(days=1)  # Going backwards
     
     return next_date
 
@@ -184,6 +185,83 @@ def fetch_crossword_data(url):
         print(f"Exception occurred: {e}")
     return None
 
+def get_word_category(answer, clue):
+    """Determine the category of a crossword answer"""
+    answer_lower = answer.lower()
+    clue_lower = clue.lower()
+    
+    # Category detection based on clue and answer patterns
+    if any(word in clue_lower for word in ['actor', 'actress', 'singer', 'author', 'director', 'star', 'celebrity']):
+        return "Celebrity/Entertainment"
+    elif any(word in clue_lower for word in ['city', 'country', 'state', 'capital', 'river', 'mountain', 'ocean']):
+        return "Geography"
+    elif any(word in clue_lower for word in ['history', 'war', 'century', 'ancient', 'historical', 'era']):
+        return "History"
+    elif any(word in clue_lower for word in ['science', 'element', 'chemical', 'physics', 'biology', 'math']):
+        return "Science/Technology"
+    elif any(word in clue_lower for word in ['sport', 'game', 'player', 'team', 'championship', 'olympic']):
+        return "Sports"
+    elif any(word in clue_lower for word in ['food', 'drink', 'cuisine', 'dish', 'meal', 'recipe']):
+        return "Food & Drink"
+    elif any(word in clue_lower for word in ['book', 'novel', 'poem', 'literature', 'writer', 'literary']):
+        return "Literature"
+    elif any(word in clue_lower for word in ['music', 'song', 'composer', 'opera', 'symphony', 'album']):
+        return "Music"
+    elif any(word in clue_lower for word in ['movie', 'film', 'cinema', 'oscar', 'hollywood']):
+        return "Movies/Film"
+    elif any(word in clue_lower for word in ['abbr.', 'briefly', 'for short', 'initially']):
+        return "Abbreviation"
+    elif len(answer) <= 3:
+        return "Short Answer"
+    elif '"' in clue or "'" in clue:
+        return "Quote/Saying"
+    else:
+        return "General Knowledge"
+
+def get_difficulty_level(answer, clue):
+    """Determine difficulty level based on answer length and clue complexity"""
+    answer_length = len(answer)
+    clue_words = len(clue.split())
+    
+    # Calculate difficulty score
+    score = 0
+    
+    # Length factor
+    if answer_length <= 3:
+        score += 1
+    elif answer_length <= 5:
+        score += 2
+    elif answer_length <= 7:
+        score += 3
+    elif answer_length <= 10:
+        score += 4
+    else:
+        score += 5
+    
+    # Clue complexity
+    if clue_words <= 2:
+        score += 1
+    elif clue_words <= 4:
+        score += 2
+    elif clue_words <= 6:
+        score += 3
+    else:
+        score += 4
+    
+    # Check for wordplay indicators
+    if any(word in clue.lower() for word in ['?', 'perhaps', 'maybe', 'sometimes', 'often']):
+        score += 2
+    
+    # Determine level
+    if score <= 3:
+        return "Easy"
+    elif score <= 5:
+        return "Medium"
+    elif score <= 7:
+        return "Hard"
+    else:
+        return "Expert"
+
 def format_to_html(crossword_data, date):
     # Safety checks
     if not crossword_data or 'clues' not in crossword_data or 'answers' not in crossword_data:
@@ -232,32 +310,64 @@ def format_to_html(crossword_data, date):
     selected_image = random.choice(image_names)
     image_url = f"https://raw.githubusercontent.com/xwordhint/answer/main/{selected_image}"
     
+    # Calculate puzzle difficulty
+    total_clues = len(clues_across) + len(clues_down)
+    avg_answer_length = sum(len(str(a).replace(" ", "")) for a in answers_across + answers_down) / total_clues if total_clues > 0 else 0
+    
+    if avg_answer_length <= 4:
+        overall_difficulty = "Easy Monday Puzzle"
+    elif avg_answer_length <= 5:
+        overall_difficulty = "Medium Tuesday Puzzle"
+    elif avg_answer_length <= 6:
+        overall_difficulty = "Moderate Wednesday Puzzle"
+    elif avg_answer_length <= 7:
+        overall_difficulty = "Challenging Thursday Puzzle"
+    elif avg_answer_length <= 8:
+        overall_difficulty = "Hard Friday Puzzle"
+    else:
+        overall_difficulty = "Expert Saturday Puzzle"
+    
+    # Day of week for SEO
+    day_name = date.strftime('%A')
+    
     # SEO header variations for Across
     across_headers = [
-        f"NYT Crossword Across Clues and Answers - {date.strftime('%B %d, %Y')}",
-        f"Today's Across Hints: {date.strftime('%B %d, %Y')} NYT Crossword Solutions",
-        f"Across Clues Explained - NYT Crossword {date.strftime('%B %d, %Y')}",
-        f"Master the Across: NYT Crossword Hints for {date.strftime('%B %d, %Y')}",
-        f"{date.strftime('%B %d, %Y')} NYT Crossword - Complete Across Solutions"
+        f"NYT {day_name} Crossword Across Clues - {date.strftime('%B %d, %Y')} Solutions",
+        f"{date.strftime('%B %d, %Y')} Across Hints: NYT {day_name} Crossword Answers",
+        f"Across Clues Explained - {day_name} NYT Crossword {date.strftime('%B %d, %Y')}",
+        f"Master Today's Across: NYT {day_name} Puzzle {date.strftime('%B %d, %Y')}",
+        f"{date.strftime('%B %d, %Y')} {day_name} NYT - Complete Across Solutions"
     ]
     
     # SEO header variations for Down
     down_headers = [
-        f"NYT Crossword Down Clues and Solutions - {date.strftime('%B %d, %Y')}",
-        f"Down Clue Hints: {date.strftime('%B %d, %Y')} NYT Crossword Guide",
-        f"Down Clues Decoded - NYT Crossword {date.strftime('%B %d, %Y')}",
-        f"Solve the Down: NYT Crossword Help for {date.strftime('%B %d, %Y')}",
-        f"{date.strftime('%B %d, %Y')} NYT Crossword - All Down Answers"
+        f"NYT {day_name} Crossword Down Clues - {date.strftime('%B %d, %Y')} Answers",
+        f"{date.strftime('%B %d, %Y')} Down Hints: NYT {day_name} Crossword Guide",
+        f"Down Clues Decoded - {day_name} NYT Crossword {date.strftime('%B %d, %Y')}",
+        f"Solve the Down: NYT {day_name} Puzzle {date.strftime('%B %d, %Y')}",
+        f"{date.strftime('%B %d, %Y')} {day_name} NYT - All Down Answers"
     ]
 
     html = f"""
-        <h2>Table of Contents</h2>
+        <h1>NYT Crossword Answers for {date.strftime('%B %d, %Y')} - {day_name} Puzzle</h1>
+        
+        <h2>Quick Navigation - Table of Contents</h2>
         <ul>
-            <li><a href="#across-clues">Across Clues</a></li>
-            <li><a href="#down-clues">Down Clues</a></li>
-            <li><a href="#puzzle-stats">Puzzle Statistics</a></li>
+            <li><a href="#puzzle-overview">Puzzle Overview & Difficulty</a></li>
+            <li><a href="#across-clues">Across Clues ({len(clues_across)} clues)</a></li>
+            <li><a href="#down-clues">Down Clues ({len(clues_down)} clues)</a></li>
+            <li><a href="#category-breakdown">Category Breakdown</a></li>
+            <li><a href="#puzzle-stats">Complete Puzzle Statistics</a></li>
+            <li><a href="#solving-tips">Pro Solving Tips</a></li>
         </ul>
 
+        
+        <h2 id="puzzle-overview">Puzzle Overview & Difficulty Analysis</h2>
+        <p><strong>Date:</strong> {date.strftime('%A, %B %d, %Y')}</p>
+        <p><strong>Difficulty Level:</strong> {overall_difficulty}</p>
+        <p><strong>Total Clues:</strong> {total_clues} ({len(clues_across)} Across, {len(clues_down)} Down)</p>
+        <p><strong>Average Word Length:</strong> {avg_answer_length:.1f} letters</p>
+        
         <div class="separator" style="clear: both; text-align: center;">
             <a href="{image_url}" style="margin-left: 1em; margin-right: 1em;">
                 <img alt="{date.strftime('%B %d, %Y')} NYT Clues Solutions" border="0" data-original-height="514" data-original-width="509" height="320" src="{image_url}" title="{date.strftime('%B %d, %Y')} NYT Clues Solutions" width="317" />
@@ -271,6 +381,8 @@ def format_to_html(crossword_data, date):
                 <th>No.</th>
                 <th>Clue</th>
                 <th>Letters</th>
+                <th>Difficulty</th>
+                <th>Category</th>
             </tr>"""
 
     # Process Across clues for table
@@ -278,11 +390,15 @@ def format_to_html(crossword_data, date):
         if not clue or not answer:
             continue
         letter_count = len(str(answer).replace(" ", ""))
+        difficulty = get_difficulty_level(str(answer), str(clue))
+        category = get_word_category(str(answer), str(clue))
         html += f"""
             <tr>
                 <td>{idx}A</td>
                 <td>{clue}</td>
                 <td>{letter_count}</td>
+                <td>{difficulty}</td>
+                <td>{category}</td>
             </tr>"""
 
     html += """
@@ -324,6 +440,8 @@ def format_to_html(crossword_data, date):
                 <th>No.</th>
                 <th>Clue</th>
                 <th>Letters</th>
+                <th>Difficulty</th>
+                <th>Category</th>
             </tr>"""
 
         # Process Down clues for table
@@ -331,11 +449,15 @@ def format_to_html(crossword_data, date):
             if not clue or not answer:
                 continue
             letter_count = len(str(answer).replace(" ", ""))
+            difficulty = get_difficulty_level(str(answer), str(clue))
+            category = get_word_category(str(answer), str(clue))
             html += f"""
             <tr>
                 <td>{idx}D</td>
                 <td>{clue}</td>
                 <td>{letter_count}</td>
+                <td>{difficulty}</td>
+                <td>{category}</td>
             </tr>"""
 
         html += """
@@ -367,13 +489,40 @@ def format_to_html(crossword_data, date):
             </li>
         </ul>"""
 
-    # Add puzzle statistics
+    # Calculate category statistics
+    categories_count = {}
+    for clue, answer in zip(clues_across + clues_down, answers_across + answers_down):
+        if clue and answer:
+            cat = get_word_category(str(answer), str(clue))
+            categories_count[cat] = categories_count.get(cat, 0) + 1
+    
+    # Add category breakdown
     html += f"""
-        <h2 id="puzzle-stats">Puzzle Statistics</h2>
+        <h2 id="category-breakdown">Category Breakdown</h2>
         <table border="1">
             <tr>
                 <th>Category</th>
-                <th>Count</th>
+                <th>Number of Clues</th>
+                <th>Percentage</th>
+            </tr>"""
+    
+    for category, count in sorted(categories_count.items(), key=lambda x: x[1], reverse=True):
+        percentage = (count / total_clues * 100) if total_clues > 0 else 0
+        html += f"""
+            <tr>
+                <td>{category}</td>
+                <td>{count}</td>
+                <td>{percentage:.1f}%</td>
+            </tr>"""
+    
+    html += f"""
+        </table>
+        
+        <h2 id="puzzle-stats">Complete Puzzle Statistics</h2>
+        <table border="1">
+            <tr>
+                <th>Metric</th>
+                <th>Value</th>
             </tr>
             <tr>
                 <td>Across Clues</td>
@@ -387,10 +536,32 @@ def format_to_html(crossword_data, date):
                 <td>Total Clues</td>
                 <td>{len(clues_across) + len(clues_down)}</td>
             </tr>
+            <tr>
+                <td>Average Answer Length</td>
+                <td>{avg_answer_length:.1f} letters</td>
+            </tr>
+            <tr>
+                <td>Shortest Answer</td>
+                <td>{min(len(str(a).replace(' ', '')) for a in answers_across + answers_down)} letters</td>
+            </tr>
+            <tr>
+                <td>Longest Answer</td>
+                <td>{max(len(str(a).replace(' ', '')) for a in answers_across + answers_down)} letters</td>
+            </tr>
         </table>
+        
+        <h2 id="solving-tips">Pro Solving Tips for {day_name} Puzzles</h2>
+        <ul>
+            <li>Start with the shortest clues - they often have fewer possible answers</li>
+            <li>Look for fill-in-the-blank clues, which are typically easier</li>
+            <li>Check crossing letters to confirm your answers</li>
+            <li>{day_name} puzzles typically have a difficulty level of {overall_difficulty.split()[0]}</li>
+            <li>Pay attention to clue categories - {max(categories_count, key=categories_count.get)} appears most frequently today</li>
+            <li>Use the word length as a guide - today's average is {avg_answer_length:.1f} letters</li>
+        </ul>
 
-        <p><strong>Disclaimer:</strong> Crossword clues © The New York Times. Educational content for puzzle enthusiasts.</p>
-        <p>Last Updated: {datetime.now().strftime('%B %d, %Y at %I:%M %p')}</p>
+        <p><strong>Disclaimer:</strong> Crossword clues are property of The New York Times. This educational content is designed to help puzzle enthusiasts improve their solving skills.</p>
+        <p><strong>Last Updated:</strong> {datetime.now().strftime('%B %d, %Y at %I:%M %p')}</p>
     """
 
     return html
@@ -435,10 +606,9 @@ def main():
     
     print(f"📅 Processing date: {target_date.strftime('%A, %B %d, %Y')}")
     
-    # Check if we've reached a reasonable end date (optional)
-    end_date = datetime(2024, 12, 31)  # Adjust as needed
-    if target_date > end_date:
-        print(f"🏁 Reached end date. Processing complete!")
+    # Check if we've reached the end date (going backwards)
+    if target_date < END_DATE:
+        print(f"🏁 Reached end date {END_DATE.strftime('%B %d, %Y')}. Processing complete!")
         return
     
     # Format date for API
@@ -450,8 +620,8 @@ def main():
     # Fetch crossword data
     crossword_data = fetch_crossword_data(url)
     
-    # Always try to advance to next date, regardless of success/failure
-    next_date = target_date + timedelta(days=1)
+    # Always try to advance to next date (going backwards), regardless of success/failure
+    next_date = target_date - timedelta(days=1)
     
     if crossword_data:
         try:
