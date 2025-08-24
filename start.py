@@ -232,11 +232,6 @@ def format_to_html(crossword_data, date):
     day_name = date.strftime('%A')
     
     html = f"""    
-        <header>
-            <h1>NYT Crossword Answers for {date.strftime('%B %d, %Y')} - {day_name} Puzzle</h1>
-            <p class="post-meta">Published on {date.strftime('%A, %B %d, %Y')} • Daily puzzle hints • <em>Crossword clues © The New York Times</em></p>
-        </header>
-
         <section aria-label="Crossword Solution Overview">
             <p itemprop="description">Master today's NYT crossword with our expert hint system. We provide synonyms, antonyms, and strategic clues to help you solve without spoiling the fun. Perfect for crossword lovers who want that satisfying "aha!" moment.</p>
         </section>
