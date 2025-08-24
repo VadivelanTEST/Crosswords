@@ -194,31 +194,100 @@ def fetch_crossword_data(url):
     return None
 
 def format_to_html(crossword_data, date):
+    # List of available images for random selection
+    image_names = [
+        'crossword-solution-keyword-optimized.png',
+        'crossword-solution-search-engine-friendly.png',
+        'crossword-solution-content-marketing.png',
+        'crossword-solution-digital-strategy.png',
+        'crossword-solution-on-page-seo.png',
+        'crossword-solution-link-building.png',
+        'crossword-solution-organic-traffic.png',
+        'crossword-solution-backlink-analysis.png',
+        'crossword-solution-seo-audit.png',
+        'crossword-solution-page-speed-optimization.png',
+        'crossword-solution-meta-description.png',
+        'crossword-solution-keyword-density.png',
+        'crossword-solution-mobile-friendliness.png',
+        'crossword-solution-rich-snippets.png',
+        'crossword-solution-technical-seo.png',
+        'crossword-solution-site-architecture.png',
+        'crossword-solution-search-console.png',
+        'crossword-solution-local-seo.png',
+        'crossword-solution-seo-tools.png',
+        'crossword-solution-content-update.png',
+        'crossword-solution-rank-tracking.png',
+        'crossword-solution-schema-markup.png',
+        'crossword-solution-user-experience.png',
+        'crossword-solution-search-ranking.png',
+        'crossword-solution-seo-report.png',
+        'crossword-solution-google-analytics.png'
+    ]
+    
+    # Select a random image
+    selected_image = random.choice(image_names)
+    image_url = f"https://raw.githubusercontent.com/xwordhint/answer/main/{selected_image}"
+    
+    # Day of week for SEO
+    day_name = date.strftime('%A')
+    
     html = f"""    
         <header>
+            <h1>NYT Crossword Answers for {date.strftime('%B %d, %Y')} - {day_name} Puzzle</h1>
             <p class="post-meta">Published on {date.strftime('%A, %B %d, %Y')} • Daily puzzle hints • <em>Crossword clues © The New York Times</em></p>
         </header>
 
         <section aria-label="Crossword Solution Overview">
-            <p itemprop="description">Master today's NYT crossword with our expert hint system. We provide synonyms, antonyms, and strategic clues to help you solve without spoiling the fun. Perfect for crossword lover who want that satisfying "aha!" moment.</p>
-        </section>  
-        <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-        <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" role="img" aria-labelledby="svgTitle svgDesc">
-          <title id="svgTitle">XWordHint Nyt Daily Crossword solve hint</title>
-          <desc id="svgDesc">Expert crossword hints, answers, and solutions with the current date.</desc>
-          <style type="text/css">.headline{{font-family: 'Segoe UI', sans-serif;font-size: 18px;fill: #2c3e50;font-weight: 600;}}            
-          </style>
-          <text x="50" y="50" class="headline">
-            Today NYT Crossword Answers - Hints 
-          </text>
-        </svg>         
+            <p itemprop="description">Master today's NYT crossword with our expert hint system. We provide synonyms, antonyms, and strategic clues to help you solve without spoiling the fun. Perfect for crossword lovers who want that satisfying "aha!" moment.</p>
+        </section>
+        
+        <h2>Quick Navigation - Table of Contents</h2>
+        <ul>
+            <li><a href="#puzzle-difficulty">Today's Puzzle Difficulty</a></li>
+            <li><a href="#across-table">Across Clues Table ({len(crossword_data['clues']['across'])} clues)</a></li>
+            <li><a href="#across-hints">Across Clues - Detailed Hints</a></li>
+            <li><a href="#down-table">Down Clues Table ({len(crossword_data['clues']['down'])} clues)</a></li>
+            <li><a href="#down-hints">Down Clues - Detailed Hints</a></li>
+            <li><a href="#solving-strategies">Expert Solving Strategies</a></li>
+            <li><a href="#puzzle-stats">Today's Puzzle Statistics</a></li>
+        </ul>
+        
+        <div class="separator" style="clear: both; text-align: center;">
+            <a href="{image_url}" style="margin-left: 1em; margin-right: 1em;">
+                <img alt="{date.strftime('%B %d, %Y')} NYT Crossword Solutions" border="0" data-original-height="514" data-original-width="509" height="320" src="{image_url}" title="{date.strftime('%B %d, %Y')} NYT Crossword Solutions" width="317" />
+            </a>
+        </div>
+        
         <div class="difficulty-indicator">
-            <h2>Today is Puzzle Difficulty: {random.choice(['Moderate', 'Challenging', 'Medium', 'Tricky'])}</h2>
+            <h2>Today's Puzzle Difficulty: {random.choice(['Moderate', 'Challenging', 'Medium', 'Tricky'])}</h2>
             <p><strong>Pro Tip:</strong> Start with the fill-in-the-blank clues - they're usually the easiest entry points!</p>
         </div>
 
-        <section aria-label="Across Clues Hints">
-            <h2> Across Clues - Strategic Hints ({len(crossword_data['clues']['across'])} clues)</h2>
+        <section id="across-table" aria-label="Across Clues Table">
+            <h2>Across Clues - Complete List</h2>
+            <table border="1">
+                <tr>
+                    <th>No.</th>
+                    <th>Clue</th>
+                    <th>Letters</th>
+                </tr>"""
+    
+    # Create table for Across clues
+    for idx, (clue, answer) in enumerate(zip(crossword_data['clues']['across'], crossword_data['answers']['across']), 1):
+        letter_count = len(answer.replace(" ", ""))
+        html += f"""
+                <tr>
+                    <td>{idx}A</td>
+                    <td>{clue}</td>
+                    <td>{letter_count}</td>
+                </tr>"""
+    
+    html += """
+            </table>
+        </section>
+
+        <section id="across-hints" aria-label="Across Clues Hints">
+            <h2>Across Clues - Strategic Hints ({len(crossword_data['clues']['across'])} clues)</h2>
             <div class="clue-group">"""
 
     for idx, (clue, answer) in enumerate(zip(crossword_data['clues']['across'], crossword_data['answers']['across']), 1):
@@ -250,10 +319,34 @@ def format_to_html(crossword_data, date):
                     </div>
                 </div>"""
 
-    html += f"""</div></section>
+    html += f"""</div>
+        </section>
 
-        <section aria-label="Down Clues Hints">
-            <h2> Down Clues - Strategic Hints ({len(crossword_data['clues']['down'])} clues)</h2>
+        <section id="down-table" aria-label="Down Clues Table">
+            <h2>Down Clues - Complete List</h2>
+            <table border="1">
+                <tr>
+                    <th>No.</th>
+                    <th>Clue</th>
+                    <th>Letters</th>
+                </tr>"""
+    
+    # Create table for Down clues
+    for idx, (clue, answer) in enumerate(zip(crossword_data['clues']['down'], crossword_data['answers']['down']), 1):
+        letter_count = len(answer.replace(" ", ""))
+        html += f"""
+                <tr>
+                    <td>{idx}D</td>
+                    <td>{clue}</td>
+                    <td>{letter_count}</td>
+                </tr>"""
+    
+    html += """
+            </table>
+        </section>
+
+        <section id="down-hints" aria-label="Down Clues Hints">
+            <h2>Down Clues - Strategic Hints ({len(crossword_data['clues']['down'])} clues)</h2>
             <div class="clue-group">"""
 
     for idx, (clue, answer) in enumerate(zip(crossword_data['clues']['down'], crossword_data['answers']['down']), 1):
@@ -285,9 +378,10 @@ def format_to_html(crossword_data, date):
                     </div>
                 </div>"""
 
-    html += f"""</div></section>
+    html += f"""</div>
+        </section>
 
-        <section aria-label="Crossword Solving Strategies">
+        <section id="solving-strategies" aria-label="Crossword Solving Strategies">
             <h2>Expert Solving Strategies</h2>
             <div class="strategy-grid">
                 <div class="strategy-item">
@@ -309,7 +403,7 @@ def format_to_html(crossword_data, date):
             </div>
         </section>
 
-        <section aria-label="Daily Crossword Stats">
+        <section id="puzzle-stats" aria-label="Daily Crossword Stats">
             <h2>Today's Puzzle Stats</h2>
             <div class="stats-container">
                 <div class="stat-item">
