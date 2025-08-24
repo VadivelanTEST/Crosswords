@@ -460,7 +460,7 @@ def main():
     if crossword_data:
         date_str = crossword_data['date']
         date = datetime.strptime(date_str, '%m/%d/%Y')
-        title = f"Xwordhint Crossword Answers - {date.strftime('%B %d, %Y')} | Today NYT Vibez"
+        title = f"XWordHint Crossword Answers {date.strftime('%B %d, %Y')} | Expert Breakdown & Tips"
         formatted_html = format_to_html(crossword_data, date)
         send_email("velanms1993.qrco@blogger.com", title, formatted_html)
         print(f"Email sent successfully for {date.strftime('%B %d, %Y')} crossword!")
