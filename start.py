@@ -514,7 +514,7 @@ def format_to_html(crossword_data, date):
         </section>
 
         <section id="across-hints" aria-label="Across Clues Hints">
-            <h2>Across Clues - Strategic Hints ({len(crossword_data['clues']['across'])} clues)</h2>
+            <h2>Across Clues - Strategic Hints</h2>
             <div class="clue-group">"""
 
     for idx, (clue, answer) in enumerate(zip(crossword_data['clues']['across'], crossword_data['answers']['across']), 1):
@@ -574,7 +574,7 @@ def format_to_html(crossword_data, date):
         </section>
 
         <section id="down-hints" aria-label="Down Clues Hints">
-            <h2>Down Clues - Strategic Hints ({len(crossword_data['clues']['down'])} clues)</h2>
+            <h2>Down Clues - Strategic Hints</h2>
             <div class="clue-group">"""
 
     for idx, (clue, answer) in enumerate(zip(crossword_data['clues']['down'], crossword_data['answers']['down']), 1):
