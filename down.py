@@ -324,51 +324,9 @@ def create_down_html(date: datetime, crossword_data: Dict) -> str:
         count=down_count
     )
     
-    # Start HTML
-    html = f"""<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{seo_title}</title>
-    <meta name="description" content="{meta_description}">
-    <meta name="keywords" content="NYT Down clues, NYT vertical clues, crossword Down answers, {date.strftime('%B %d %Y')} crossword, New York Times puzzle, vertical crossword solutions, Down puzzle hints, crossword help today">
-    <meta name="robots" content="index, follow">
-    <meta property="og:title" content="{seo_title}">
-    <meta property="og:description" content="{meta_description}">
-    <meta property="og:type" content="article">
-    <meta property="og:image" content="{image_url}">
-    <meta property="article:published_time" content="{date.isoformat()}">
-    <meta property="article:author" content="NYT Crossword Solver">
-    <meta property="article:section" content="Crossword Puzzles">
-    <link rel="canonical" href="https://xwordhint.blogspot.com/nyt-down-{date.strftime('%Y-%m-%d')}.html">
-    <script type="application/ld+json">
-    {{
-        "@context": "https://schema.org",
-        "@type": "Article",
-        "headline": "{seo_title}",
-        "description": "{meta_description}",
-        "datePublished": "{date.isoformat()}",
-        "author": {{
-            "@type": "Person",
-            "name": "Crossword Expert"
-        }},
-        "publisher": {{
-            "@type": "Organization",
-            "name": "XWordHint"
-        }},
-        "mainEntityOfPage": {{
-            "@type": "WebPage",
-            "@id": "https://xwordhint.blogspot.com/"
-        }}
-    }}
-    </script>
-</head>
-<body>
-"""
-
+   
     # Main heading
-    html += f"""
+    html = f"""
     <h1>{seo_title}</h1>
     
     <p>Welcome to today's complete NYT Down clues guide for {date.strftime('%B %d, %Y')}. We have all {down_count} vertical clues solved with detailed hints and explanations. Down clues run from top to bottom in the crossword grid.</p>
@@ -514,9 +472,7 @@ def create_down_html(date: datetime, crossword_data: Dict) -> str:
     <p>Explore more puzzles in our <a href="{random.choice(internal_links)}">complete archive</a> or check <a href="{random.choice(internal_links)}">tomorrow's puzzle preview</a>.</p>
 """
 
-    html += """
-</body>
-</html>"""
+
     
     return html
 
