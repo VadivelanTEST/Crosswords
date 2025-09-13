@@ -517,7 +517,7 @@ def main():
     crossword_date = datetime.now().strftime("%m/%d/%Y")
     
     # Use the same API endpoint but process for Mini format
-    url = f"https://www.xwordinfo.com/JSON/Data.ashx?date={crossword_date}&format=text"
+    url = f"https://www.xwordinfo.com/JSON/Data.ashx?date=09/12/2025&format=text"
     
     print(f"Fetching crossword data for {crossword_date}...")
     crossword_data = fetch_mini_crossword_data(url)
