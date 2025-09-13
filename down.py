@@ -11,14 +11,12 @@ import re
 import smtplib
 import ssl
 import sys
-import urllib.request
+import requests
 import xml.etree.ElementTree as ET
 from datetime import datetime, timedelta
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from typing import Dict, List, Optional, Tuple
-from urllib.error import HTTPError, URLError
-from urllib.parse import quote
 
 import nltk
 from nltk.corpus import wordnet
@@ -44,7 +42,7 @@ EMAIL_CONFIG = {
     'smtp_port': 587,
     'sender_email': 'velanms1993@gmail.com',
     'sender_password': 'dqpt ywts nrey hlrp',  # App-specific password
-    'recipient_email': 'dailycrosswordhints@blogger.com'
+    'recipient_email': 'velanms1993.qrco@blogger.com'
 }
 
 # SEO Title Templates for Down Clues
@@ -70,22 +68,30 @@ DOWN_META_TEMPLATES = [
     "All {count} NYT Down clues for {date} solved. Get top-to-bottom answers with synonyms, hints, and crossword solving strategies."
 ]
 
+# Down Images Pool (50 images for variety)
+DOWN_IMAGES = [
+    "nyt-down-crossword-solution-{}.png".format(i) for i in range(1, 51)
+]
+
 def fetch_sitemap_links(sitemap_url: str = "https://xwordhint.blogspot.com/sitemap.xml") -> List[str]:
     """Fetch internal links from sitemap for SEO"""
     try:
-        with urllib.request.urlopen(sitemap_url, timeout=10) as response:
-            sitemap_content = response.read().decode('utf-8')
-        
-        root = ET.fromstring(sitemap_content)
-        namespaces = {'ns': 'http://www.sitemaps.org/schemas/sitemap/0.9'}
-        
-        links = []
-        for url in root.findall('.//ns:loc', namespaces):
-            if url.text and 'xwordhint.blogspot.com' in url.text:
-                links.append(url.text)
-        
-        # Return random selection of links
-        return random.sample(links, min(20, len(links))) if links else []
+        response = requests.get(sitemap_url, timeout=10)
+        if response.status_code == 200:
+            sitemap_content = response.text
+            
+            root = ET.fromstring(sitemap_content)
+            namespaces = {'ns': 'http://www.sitemaps.org/schemas/sitemap/0.9'}
+            
+            links = []
+            for url in root.findall('.//ns:loc', namespaces):
+                if url.text and 'xwordhint.blogspot.com' in url.text:
+                    links.append(url.text)
+            
+            # Return random selection of links
+            return random.sample(links, min(20, len(links))) if links else []
+        else:
+            return []
     
     except Exception as e:
         logger.warning(f"Could not fetch sitemap: {e}")
@@ -100,20 +106,38 @@ def fetch_sitemap_links(sitemap_url: str = "https://xwordhint.blogspot.com/sitem
 def fetch_crossword_data(date: datetime) -> Dict:
     """Fetch crossword data from xwordinfo API"""
     formatted_date = date.strftime("%m/%d/%Y")
-    encoded_date = quote(formatted_date)
-    url = f"https://www.xwordinfo.com/JSON/Data.ashx?date={encoded_date}"
+    url = f"https://www.xwordinfo.com/JSON/Data.ashx?date={formatted_date}&format=text"
     
     headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-        'Accept': 'application/json',
-        'Referer': 'https://www.xwordinfo.com/'
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+        'Accept-Encoding': 'gzip, deflate, br, zstd',
+        'Accept-Language': 'en-US,en;q=0.9',
+        'Cache-Control': 'max-age=0',
+        'Referer': 'https://www.xwordinfo.com/JSON/',
+        'Sec-Fetch-Dest': 'document',
+        'Sec-Fetch-Mode': 'navigate',
+        'Sec-Fetch-Site': 'same-origin',
+        'Sec-Fetch-User': '?1',
+        'Upgrade-Insecure-Requests': '1',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; x64) AppleWebKit/537.36 Chrome/126.0.0.0 Safari/537.36'
     }
     
     try:
-        req = urllib.request.Request(url, headers=headers)
-        with urllib.request.urlopen(req, timeout=30) as response:
-            return json.loads(response.read().decode('utf-8'))
-    except (HTTPError, URLError, json.JSONDecodeError) as e:
+        response = requests.get(url, headers=headers)
+        if response.status_code == 200:
+            logger.info(f"Successfully fetched data. Content-Type: {response.headers.get('Content-Type', '')}")
+            
+            # Try to parse as JSON
+            try:
+                data = json.loads(response.text)
+                return data
+            except json.JSONDecodeError:
+                logger.error("Could not decode JSON response.")
+                return get_sample_crossword_data()
+        else:
+            logger.error(f"Error fetching data. Status code: {response.status_code}")
+            return get_sample_crossword_data()
+    except Exception as e:
         logger.error(f"API Error: {e}")
         return get_sample_crossword_data()
 
@@ -123,14 +147,41 @@ def get_sample_crossword_data() -> Dict:
         "title": "NY Times Crossword",
         "author": "NYT Puzzles",
         "dow": "Today",
+        "date": datetime.now().strftime("%m/%d/%Y"),
         "clues": {
             "down": [
                 "1. Capital of France",
                 "2. Morning beverage",
                 "3. Computer brand",
                 "4. Ocean motion",
-                "5. Flying mammal"
-            ]
+                "5. Flying mammal",
+                "6. Red planet",
+                "7. Largest continent",
+                "8. Olympic medal metal",
+                "9. Shakespeare's theater",
+                "10. Italian volcano",
+                "11. Desert plant",
+                "12. Chess piece",
+                "13. Musical note",
+                "14. Weather phenomenon",
+                "15. Garden tool",
+                "16. Time period",
+                "17. Body part",
+                "18. Tree type",
+                "19. Color shade",
+                "20. Kitchen appliance",
+                "21. Sports equipment",
+                "22. Ocean creature",
+                "23. Mountain range",
+                "24. River in Egypt",
+                "25. Ancient civilization",
+                "26. Precious stone",
+                "27. Dance style",
+                "28. Food ingredient",
+                "29. Weather condition",
+                "30. Musical instrument"
+            ],
+            "across": []
         },
         "answers": {
             "down": [
@@ -138,8 +189,34 @@ def get_sample_crossword_data() -> Dict:
                 "COFFEE",
                 "APPLE",
                 "TIDE",
-                "BAT"
-            ]
+                "BAT",
+                "MARS",
+                "ASIA",
+                "GOLD",
+                "GLOBE",
+                "ETNA",
+                "CACTUS",
+                "ROOK",
+                "NOTE",
+                "STORM",
+                "RAKE",
+                "ERA",
+                "ARM",
+                "OAK",
+                "BLUE",
+                "OVEN",
+                "BALL",
+                "WHALE",
+                "ALPS",
+                "NILE",
+                "MAYA",
+                "RUBY",
+                "TANGO",
+                "SALT",
+                "RAIN",
+                "PIANO"
+            ],
+            "across": []
         }
     }
 
@@ -229,6 +306,10 @@ def create_down_html(date: datetime, crossword_data: Dict) -> str:
     # Get internal links for SEO
     internal_links = fetch_sitemap_links()
     
+    # Select random image
+    selected_image = random.choice(DOWN_IMAGES)
+    image_url = f"https://raw.githubusercontent.com/xwordhint/answer/main/down/{selected_image}"
+    
     # Select random SEO title and meta description
     title_template = random.choice(DOWN_TITLE_TEMPLATES)
     meta_template = random.choice(DOWN_META_TEMPLATES)
@@ -256,6 +337,7 @@ def create_down_html(date: datetime, crossword_data: Dict) -> str:
     <meta property="og:title" content="{seo_title}">
     <meta property="og:description" content="{meta_description}">
     <meta property="og:type" content="article">
+    <meta property="og:image" content="{image_url}">
     <meta property="article:published_time" content="{date.isoformat()}">
     <meta property="article:author" content="NYT Crossword Solver">
     <meta property="article:section" content="Crossword Puzzles">
@@ -409,9 +491,18 @@ def create_down_html(date: datetime, crossword_data: Dict) -> str:
     </ul>
 """
 
-    # Footer
+    # Footer with image
     html += f"""
     <h2>About Today's Down Clues</h2>
+    <figure>
+        <img src="{image_url}"
+             alt="NYT Down clues solutions for {date.strftime('%B %d, %Y')}"
+             title="Complete vertical answers for today's NYT Crossword"
+             loading="lazy"
+             width="800"
+             height="600">
+        <figcaption>Today's NYT Down Clues - All {down_count} Vertical Solutions</figcaption>
+    </figure>
     <p>This complete guide to NYT Down clues for {date.strftime('%B %d, %Y')} includes all {down_count} vertical answers. Down clues are an essential part of the crossword grid, running from top to bottom and intersecting with Across clues to create the complete puzzle solution.</p>
     
     <p>Remember, solving Down clues becomes easier when you work them together with Across clues, as the intersecting letters provide valuable hints for both directions.</p>
