@@ -441,30 +441,7 @@ def format_mini_to_html(crossword_data, date):
     internal_links = fetch_sitemap_urls(max_links=15)
     
     # Start HTML with comprehensive SEO tags and schema markup
-    html = f"""
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="NYT Mini Crossword answers for {date.strftime('%B %d, %Y')}. Get hints and solutions for today's 5x5 puzzle. Perfect for quick solving!">
-    <meta name="keywords" content="NYT Mini crossword, {date.strftime('%B %d %Y')}, crossword answers, crossword hints, 5x5 puzzle, daily mini">
-    <meta name="author" content="XWordHint">
-    <meta property="og:title" content="{seo_title}">
-    <meta property="og:description" content="Complete solutions and hints for today's NYT Mini Crossword puzzle">
-    <meta property="og:type" content="article">
-    <meta property="og:image" content="{image_url}">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="{seo_title}">
-    <meta name="twitter:description" content="NYT Mini Crossword solutions with helpful hints">
-    <link rel="canonical" href="https://xwordhint.com/nyt-mini-{date.strftime('%Y-%m-%d')}">
-</head>
-<body>
-    <article itemscope itemtype="https://schema.org/Article">
-        <meta itemprop="headline" content="{seo_title}">
-        <meta itemprop="datePublished" content="{date.strftime('%Y-%m-%d')}">
-        <meta itemprop="dateModified" content="{datetime.now().strftime('%Y-%m-%d')}">
-        
+    html = f"""        
         <header>
             <h1>{seo_title}</h1>
             <p><strong>Quick Summary:</strong> Today's NYT Mini Crossword has {total_clues} clues total. We have all the answers plus helpful hints to make solving easier!</p>
@@ -832,10 +809,7 @@ def format_mini_to_html(crossword_data, date):
             <p><strong>About This Page:</strong> We provide hints and answers for the NYT Mini Crossword to help you learn and improve. This site is not connected to The New York Times.</p>
             <p><strong>Last Updated:</strong> {datetime.now().strftime('%B %d, %Y at %I:%M %p')}</p>
             <p><small>Search terms: {', '.join(MINI_KEYWORDS['primary'][:5])}, {date.strftime('%B %d %Y')} mini crossword</small></p>
-        </footer>
-    </article>
-</body>
-</html>
+        </footer>  
     """
     
     return html
