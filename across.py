@@ -314,30 +314,7 @@ def format_across_to_html(crossword_data, date):
     internal_links = fetch_sitemap_urls(max_links=15)
     
     # Start HTML with comprehensive SEO tags and schema markup
-    html = f"""
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="NYT Across clues answers for {date.strftime('%B %d, %Y')}. Get all {across_count} horizontal crossword solutions with hints. Expert help for left-to-right clues.">
-    <meta name="keywords" content="NYT Across clues, {date.strftime('%B %d %Y')}, horizontal crossword, across answers, crossword hints, left to right">
-    <meta name="author" content="XWordHint">
-    <meta property="og:title" content="{seo_title}">
-    <meta property="og:description" content="Complete Across clues solutions and hints for today's NYT Crossword">
-    <meta property="og:type" content="article">
-    <meta property="og:image" content="{image_url}">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="{seo_title}">
-    <meta name="twitter:description" content="NYT Across clues solutions with helpful hints">
-    <link rel="canonical" href="https://xwordhint.com/nyt-across-{date.strftime('%Y-%m-%d')}">
-</head>
-<body>
-    <article itemscope itemtype="https://schema.org/Article">
-        <meta itemprop="headline" content="{seo_title}">
-        <meta itemprop="datePublished" content="{date.strftime('%Y-%m-%d')}">
-        <meta itemprop="dateModified" content="{datetime.now().strftime('%Y-%m-%d')}">
-        
+    html = f"""        
         <header>
             <h1>{seo_title}</h1>
             <p><strong>Quick Summary:</strong> Today's NYT Crossword has {across_count} Across clues. We have all the horizontal answers plus helpful hints to make solving easier!</p>
@@ -606,10 +583,7 @@ def format_across_to_html(crossword_data, date):
             <p><strong>About This Page:</strong> We provide comprehensive Across clues solutions and hints for the NYT Crossword to help you improve your solving skills. This site is not affiliated with The New York Times.</p>
             <p><strong>Last Updated:</strong> {datetime.now().strftime('%B %d, %Y at %I:%M %p')}</p>
             <p><small>Search terms: {', '.join(ACROSS_KEYWORDS['primary'][:5])}, {date.strftime('%B %d %Y')} across clues</small></p>
-        </footer>
-    </article>
-</body>
-</html>
+        </footer>   
     """
     
     return html
