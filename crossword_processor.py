@@ -9,6 +9,8 @@ from nltk.corpus import wordnet
 import nltk
 from datetime import datetime, timedelta
 import random
+import xml.etree.ElementTree as ET
+import re
 
 # Download wordnet
 nltk.download('wordnet')
@@ -25,23 +27,23 @@ def get_current_progress():
         if os.path.exists(PROGRESS_FILE):
             with open(PROGRESS_FILE, 'r', encoding='utf-8') as f:
                 content = f.read().strip()
-                print(f"📖 Reading progress file: '{content}'")
+                print(f"[READ] Reading progress file: '{content}'")
                 if content:
                     try:
                         parsed_date = datetime.strptime(content, '%Y-%m-%d')
-                        print(f"✅ Found last processed date: {parsed_date.strftime('%Y-%m-%d')}")
+                        print(f"[OK] Found last processed date: {parsed_date.strftime('%Y-%m-%d')}")
                         return parsed_date
                     except ValueError as ve:
-                        print(f"❌ Invalid date format in progress file: {ve}")
+                        print(f"[ERROR] Invalid date format in progress file: {ve}")
                         return START_DATE
                 else:
-                    print("⚠️ Progress file is empty")
+                    print("[WARNING] Progress file is empty")
                     return START_DATE
         else:
-            print(f"📝 Progress file '{PROGRESS_FILE}' doesn't exist, starting from beginning")
+            print(f"[INFO] Progress file '{PROGRESS_FILE}' doesn't exist, starting from beginning")
             return START_DATE
     except Exception as e:
-        print(f"❌ Error reading progress file: {e}")
+        print(f"[ERROR] Error reading progress file: {e}")
         return START_DATE
 
 def save_progress(date):
@@ -59,29 +61,88 @@ def save_progress(date):
             with open(PROGRESS_FILE, 'r', encoding='utf-8') as f:
                 saved_content = f.read().strip()
                 if saved_content == date.strftime('%Y-%m-%d'):
-                    print(f"✅ Progress saved successfully: {date.strftime('%Y-%m-%d')}")
+                    print(f"[OK] Progress saved successfully: {date.strftime('%Y-%m-%d')}")
                     return True
                 else:
-                    print(f"❌ Progress verification failed. Expected: {date.strftime('%Y-%m-%d')}, Got: {saved_content}")
+                    print(f"[ERROR] Progress verification failed. Expected: {date.strftime('%Y-%m-%d')}, Got: {saved_content}")
                     return False
         else:
-            print(f"❌ Progress file was not created")
+            print(f"[ERROR] Progress file was not created")
             return False
             
     except Exception as e:
-        print(f"❌ Error saving progress: {e}")
+        print(f"[ERROR] Error saving progress: {e}")
         return False
 
 def get_next_date():
     """Get the next date to process (going backwards in time)"""
     last_processed = get_current_progress()
     next_date = last_processed
-    
+
     # Skip Sundays (NYT doesn't publish crosswords on Sundays)
     while next_date.weekday() == 6:  # 6 = Sunday
         next_date -= timedelta(days=1)  # Going backwards
-    
+
     return next_date
+
+# Function to fetch internal links from sitemap
+def fetch_sitemap_urls(max_links=20):
+    """Fetch URLs from xwordhint sitemap for internal linking"""
+    internal_links = []
+
+    try:
+        # Try to fetch from both pages of sitemap
+        for page in [1, 2]:
+            url = f"https://xwordhint.blogspot.com/sitemap.xml?page={page}"
+
+            try:
+                response = requests.get(url, timeout=5)
+                if response.status_code == 200:
+                    # Parse XML
+                    root = ET.fromstring(response.content)
+
+                    # Extract URLs from the sitemap
+                    # Blogger sitemaps use the namespace
+                    namespace = {'ns': 'http://www.sitemaps.org/schemas/sitemap/0.9'}
+
+                    for url_element in root.findall('.//ns:url', namespace):
+                        loc = url_element.find('ns:loc', namespace)
+                        if loc is not None and loc.text:
+                            url_text = loc.text
+                            # Only include actual post URLs, not the homepage
+                            if url_text and ('/2024/' in url_text or '/2025/' in url_text or '/2021/' in url_text or '/2022/' in url_text or '/2023/' in url_text):
+                                # Extract title from URL for anchor text
+                                title_match = re.search(r'/(\d{4}/\d{2})/(.+?)\.html', url_text)
+                                if title_match:
+                                    post_slug = title_match.group(2)
+                                    # Convert slug to readable title
+                                    title = post_slug.replace('-', ' ').title()
+                                    # Clean up common patterns
+                                    title = title.replace('Nyt', 'NYT').replace('Crossword', 'Crossword')
+                                    internal_links.append({
+                                        'url': url_text,
+                                        'title': title
+                                    })
+            except Exception as e:
+                print(f"Error fetching sitemap page {page}: {e}")
+
+    except Exception as e:
+        print(f"Error in sitemap fetching: {e}")
+
+    # If no links fetched, use fallback links
+    if not internal_links:
+        internal_links = [
+            {'url': 'https://xwordhint.blogspot.com/2024/12/nyt-crossword-december-hints.html', 'title': 'NYT Crossword December Hints'},
+            {'url': 'https://xwordhint.blogspot.com/2024/11/nyt-crossword-november-solutions.html', 'title': 'NYT Crossword November Solutions'},
+            {'url': 'https://xwordhint.blogspot.com/2024/10/crossword-puzzle-tips.html', 'title': 'Crossword Puzzle Tips'},
+            {'url': 'https://xwordhint.blogspot.com/2024/09/mini-crossword-guide.html', 'title': 'Mini Crossword Guide'},
+            {'url': 'https://xwordhint.blogspot.com/2024/08/daily-puzzle-help.html', 'title': 'Daily Puzzle Help'}
+        ]
+
+    # Return random selection of links
+    if len(internal_links) > max_links:
+        return random.sample(internal_links, max_links)
+    return internal_links
 
 # Function to get synonyms
 def get_synonyms(word):
@@ -266,7 +327,10 @@ def format_to_html(crossword_data, date):
     # Safety checks
     if not crossword_data or 'clues' not in crossword_data or 'answers' not in crossword_data:
         return None
-        
+
+    # Fetch internal links from sitemap for better SEO
+    internal_links = fetch_sitemap_urls(max_links=15)
+
     clues_across = crossword_data.get('clues', {}).get('across', [])
     clues_down = crossword_data.get('clues', {}).get('down', [])
     answers_across = crossword_data.get('answers', {}).get('across', [])
@@ -422,7 +486,7 @@ def format_to_html(crossword_data, date):
     ]
 
     html = f"""
-      
+
         <h2>Quick Navigation - Table of Contents</h2>
         <ul>
             <li><a href="#puzzle-overview">Puzzle Overview & Difficulty</a></li>
@@ -431,6 +495,20 @@ def format_to_html(crossword_data, date):
             <li><a href="#category-breakdown">Category Breakdown</a></li>
             <li><a href="#puzzle-stats">Complete Puzzle Statistics</a></li>
             <li><a href="#solving-tips">Pro Solving Tips</a></li>
+            <li><a href="#related-puzzles">Related Crossword Solutions</a></li>
+        </ul>
+
+        <h2>Related Puzzles</h2>
+        <p>Check out these other crossword solutions and helpful guides:</p>
+        <ul>
+    """
+
+    # Add 5 random internal links at the top
+    if internal_links:
+        for link in random.sample(internal_links, min(5, len(internal_links))):
+            html += f'            <li><a href="{link["url"]}">{link["title"]}</a></li>\n'
+
+    html += f"""
         </ul>
 
         
@@ -648,6 +726,19 @@ def format_to_html(crossword_data, date):
             <li>Ask someone for help if you need it - crosswords are more fun with friends!</li>
         </ul>
 
+        <h2 id="related-puzzles">More Crossword Resources</h2>
+        <p>Explore more crossword solutions and helpful guides to improve your solving skills:</p>
+        <ul>
+    """
+
+    # Add more internal links at the bottom
+    if internal_links:
+        for link in random.sample(internal_links, min(10, len(internal_links))):
+            html += f'            <li><a href="{link["url"]}">{link["title"]}</a></li>\n'
+
+    html += f"""
+        </ul>
+
         <p><strong>Disclaimer:</strong> Crossword clues are property of The New York Times. This educational content is designed to help puzzle enthusiasts improve their solving skills.</p>
         <p><strong>Last Updated:</strong> {datetime.now().strftime('%B %d, %Y at %I:%M %p')}</p>
     """
@@ -660,7 +751,7 @@ def send_email(to_email, subject, html_content):
     password = os.getenv("EMAIL_PASS", "dqpt ywts nrey hlrp")
 
     if not html_content:
-        print("❌ No HTML content to send")
+        print("[ERROR] No HTML content to send")
         return False
 
     try:
@@ -676,34 +767,34 @@ def send_email(to_email, subject, html_content):
         server.sendmail(from_email, to_email, msg.as_string())
         server.quit()
         
-        print(f"✅ Email sent successfully!")
+        print(f"[OK] Email sent successfully!")
         return True
         
     except Exception as e:
-        print(f"❌ Email sending failed: {e}")
+        print(f"[ERROR] Email sending failed: {e}")
         return False
 
 # Main function - processes one date per run
 def main():
-    print("🚀 Starting single date crossword processing...")
-    print(f"📁 Working directory: {os.getcwd()}")
-    print(f"📋 Progress file path: {os.path.abspath(PROGRESS_FILE)}")
+    print("[START] Starting single date crossword processing...")
+    print(f"[INFO] Working directory: {os.getcwd()}")
+    print(f"[INFO] Progress file path: {os.path.abspath(PROGRESS_FILE)}")
     
     # Get next date to process
     target_date = get_next_date()
     
-    print(f"📅 Processing date: {target_date.strftime('%A, %B %d, %Y')}")
+    print(f"[DATE] Processing date: {target_date.strftime('%A, %B %d, %Y')}")
     
     # Check if we've reached the end date (going backwards)
     if target_date < END_DATE:
-        print(f"🏁 Reached end date {END_DATE.strftime('%B %d, %Y')}. Processing complete!")
+        print(f"[END] Reached end date {END_DATE.strftime('%B %d, %Y')}. Processing complete!")
         return
     
     # Format date for API
     crossword_date = target_date.strftime("%m/%d/%Y")
     url = f"https://www.xwordinfo.com/JSON/Data.ashx?date={crossword_date}&format=text"
     
-    print(f"🌐 Fetching: {url}")
+    print(f"[URL] Fetching: {url}")
     
     # Fetch crossword data
     crossword_data = fetch_crossword_data(url)
@@ -715,7 +806,7 @@ def main():
         try:
             # Validate data structure
             if 'clues' in crossword_data and 'answers' in crossword_data:
-                print("✅ Valid crossword data found")
+                print("[OK] Valid crossword data found")
                 
                 # Format HTML
                 html_content = format_to_html(crossword_data, target_date)
@@ -728,37 +819,37 @@ def main():
                     success = send_email("velanms1993.qrco@blogger.com", title, html_content)
                     
                     if success:
-                        print(f"📈 Success: Completed {target_date.strftime('%Y-%m-%d')}")
+                        print(f"[SUCCESS] Completed {target_date.strftime('%Y-%m-%d')}")
                     else:
-                        print(f"❌ Email failed for {target_date.strftime('%Y-%m-%d')}")
+                        print(f"[ERROR] Email failed for {target_date.strftime('%Y-%m-%d')}")
                 else:
-                    print(f"❌ Failed to format HTML for {target_date.strftime('%Y-%m-%d')}")
+                    print(f"[ERROR] Failed to format HTML for {target_date.strftime('%Y-%m-%d')}")
             else:
-                print(f"⚠️ Invalid crossword data structure for {target_date.strftime('%Y-%m-%d')}")
+                print(f"[WARNING] Invalid crossword data structure for {target_date.strftime('%Y-%m-%d')}")
         except Exception as e:
-            print(f"❌ Error processing crossword data for {target_date.strftime('%Y-%m-%d')}: {e}")
+            print(f"[ERROR] Error processing crossword data for {target_date.strftime('%Y-%m-%d')}: {e}")
     else:
-        print(f"⚠️ No crossword data available for {target_date.strftime('%Y-%m-%d')}")
+        print(f"[WARNING] No crossword data available for {target_date.strftime('%Y-%m-%d')}")
     
     # ALWAYS save progress to move to next date
-    print(f"💾 Saving progress to move to next date: {next_date.strftime('%Y-%m-%d')}")
+    print(f"[SAVE] Saving progress to move to next date: {next_date.strftime('%Y-%m-%d')}")
     save_success = save_progress(next_date)
     
     if save_success:
-        print(f"📅 Next run will process: {next_date.strftime('%A, %B %d, %Y')}")
+        print(f"[NEXT] Next run will process: {next_date.strftime('%A, %B %d, %Y')}")
     else:
-        print(f"❌ Failed to save progress! Next run may repeat {target_date.strftime('%Y-%m-%d')}")
+        print(f"[ERROR] Failed to save progress! Next run may repeat {target_date.strftime('%Y-%m-%d')}")
     
     # Show file status for debugging
     try:
         if os.path.exists(PROGRESS_FILE):
             with open(PROGRESS_FILE, 'r', encoding='utf-8') as f:
                 current_content = f.read().strip()
-                print(f"📄 Current progress file content: '{current_content}'")
+                print(f"[FILE] Current progress file content: '{current_content}'")
         else:
-            print(f"📄 Progress file does not exist after save attempt")
+            print(f"[FILE] Progress file does not exist after save attempt")
     except Exception as e:
-        print(f"❌ Error checking progress file: {e}")
+        print(f"[ERROR] Error checking progress file: {e}")
 
 if __name__ == "__main__":
     main()
