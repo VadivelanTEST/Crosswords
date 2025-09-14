@@ -419,7 +419,7 @@ def generate_seo_title(date, crossword_data):
 
 # Mini-specific image list (reduced for performance)
 MINI_IMAGES = [
-    "nyt-mini-crossword-solution-{}.png".format(i) for i in range(1, 51)
+    "nyt_mini_puzzle_{}.png".format(i) for i in range(1, 51)
 ]
 
 def format_mini_to_html(crossword_data, date):
@@ -427,7 +427,7 @@ def format_mini_to_html(crossword_data, date):
     
     # Select random Mini-specific image
     selected_image = random.choice(MINI_IMAGES)
-    image_url = f"https://raw.githubusercontent.com/xwordhint/answer/main/mini/{selected_image}"
+    image_url = f"https://raw.githubusercontent.com/xwordhint/answer/main/mini-image/{selected_image}"
     
     # Generate SEO title
     seo_title = generate_seo_title(date, crossword_data)
