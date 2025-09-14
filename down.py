@@ -294,7 +294,7 @@ def generate_seo_title(date, crossword_data):
 
 # Images list for variety
 DOWN_IMAGES = [
-    "nyt-down-crossword-solution-{}.png".format(i) for i in range(1, 51)
+    "down_puzzle_{}.png".format(i) for i in range(1, 51)
 ]
 
 def format_down_to_html(crossword_data, date):
