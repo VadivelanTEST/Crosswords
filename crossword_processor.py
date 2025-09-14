@@ -342,7 +342,7 @@ def format_to_html(crossword_data, date):
 
     # Generate list of available images dynamically (1-100)
     image_names = [
-        "crossword_puzzle_{}.png".format(i) for i in range(1, 101)
+        "crossword_puzzle_{}.png".format(i) for i in range(1, 201)
     ]
     # Select a random image
     selected_image = random.choice(image_names)
