@@ -531,12 +531,7 @@ def format_down_to_html(crossword_data, date):
                 </ul>
             </nav>
             
-            <h3>Other Puzzle Directions:</h3>
-            <ul>
-                <li><a href="/nyt-across-clues">Today's Across Clues Solutions</a></li>
-                <li><a href="/nyt-mini-crossword">NYT Mini Crossword Answers</a></li>
-                <li><a href="/crossword-archive">Complete Crossword Archive</a></li>
-            </ul>
+           
         </section>
         
         <section id="faq" itemscope itemtype="https://schema.org/FAQPage">
