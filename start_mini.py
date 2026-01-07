@@ -18,18 +18,26 @@ try:
 except LookupError:
     nltk.download('wordnet')
 
+# Helper function to get week of month (1-4)
+def get_week_of_month(date_obj):
+    """Calculate the week of the month (1-4)"""
+    day = date_obj.day
+    week = (day - 1) // 7 + 1
+    # Cap at 4 as requested "4 weeks in per month"
+    return min(week, 4)
+
 # SEO-optimized title templates for NYT Mini
 SEO_TITLE_TEMPLATES = [
-    "NYT Mini Crossword Answers Today {date} - All {total} Clues Solved & Expert Hints",
-    "Today's NYT Mini Crossword {date} - Complete Solutions with Smart Hints | 5-Minute Solve",
-    "{day} NYT Mini Crossword Answers {date} - Quick 5×5 Grid Solutions & Tips",
-    "NYT Mini {date}: Fast Answers, Strategic Hints & Speed-Solving Guide",
-    "Mini Crossword NYT {date} - Today's Puzzle Solved in Under {time} Minutes",
-    "NYT Mini Crossword {date} Hints & Answers - Beat the Average 1-Minute Time",
-    "{day}'s NYT Mini {short_date} - All {across} Across & {down} Down Clues Decoded",
-    "NYT Mini Today {date}: Complete Walkthrough with Progressive Hints",
-    "Quick NYT Mini Crossword {date} - Mobile-Friendly Solutions & Speed Tips",
-    "Today's 5×5 NYT Mini {date} - Instant Answers Plus Learning Hints"
+    "NYT Mini Trivia Week {week_num} {date} - Hints & Answers",
+    "Trivia Week {week_num} NYT Mini {date} Solutions & Guide",
+    "NYT Mini Crossword Trivia Week {week_num} {date} - Daily Answers",
+    "Quick NYT Mini Crossword {date} (Trivia Week {week_num}) - Solutions",
+    "NYT Mini Puzzle Trivia Week {week_num} {date} - Solved",
+    "Today's Trivia Week {week_num} NYT Mini Crossword {date} Answers",
+    "Trivia Week {week_num} {date} NYT Mini Crossword Hints",
+    "NYT Mini Answers {date} - Trivia Week {week_num} Special",
+    "Complete Solutions for NYT Mini Trivia Week {week_num} {date}",
+    "Trivia Week {week_num} Manual for NYT Mini {date}"
 ]
 
 # Function to fetch internal links from sitemap
@@ -93,22 +101,29 @@ def fetch_sitemap_urls(max_links=20):
 
 # Mini-specific high-traffic keywords for SEO
 MINI_KEYWORDS = {
-    'primary': ['NYT Mini', 'Mini crossword', 'today', 'answers', 'hints', '5x5'],
+    'primary': [
+        'NYT Mini Trivia Week',
+        'Trivia Week {week_num}', 
+        'Mini crossword Trivia Week', 
+        'Trivia Week answers', 
+        'NYT Trivia Week',
+        'NYT Mini', 
+        'Mini crossword', 
+        'today'
+    ],
     'long_tail': [
-        'NYT Mini crossword answers today',
-        'how to solve NYT Mini quickly',
-        'today\'s Mini crossword hints',
-        '5 minute crossword puzzle',
-        'NYT Mini speed solving tips',
-        'quick crossword answers today',
-        'Mini crossword help today',
-        'NYT 5x5 crossword solutions'
+        'NYT Mini Trivia Week answers',
+        'Trivia Week {week_num} crossword hints',
+        'NYT Mini Trivia Week solutions',
+        'how to solve Trivia Week {week_num} Mini',
+        'Trivia Week crossword help',
+        'NYT 5x5 Trivia Week puzzle'
     ],
     'voice_search': [
-        'What are today\'s NYT Mini crossword answers',
-        'How do I solve the NYT Mini',
-        'Give me hints for today\'s Mini crossword',
-        'Show me NYT Mini solutions'
+        'What are today\'s Trivia Week answers',
+        'How do I solve the Trivia Week Mini',
+        'Give me hints for Trivia Week {week_num}',
+        'Show me NYT Mini Trivia Week solutions'
     ]
 }
 
@@ -177,17 +192,17 @@ def generate_mini_hint_text(answer, clue, clue_number, direction):
     return hints
 
 # Function to create Mini 5x5 grid visualization
-def create_mini_grid_html(crossword_data):
+def create_mini_grid_html(crossword_data, week_num):
     """Create a professional 5x5 grid table for NYT Mini"""
     try:
         grid_size = 5
         
         grid_html = """
         <section>
-            <h2>Today's NYT Mini Crossword Grid Layout</h2>
+            <h2>Today's Trivia Week {week_num} NYT Mini Crossword Grid Layout</h2>
             <p>This puzzle uses a 5 by 5 grid. That means 5 boxes across and 5 boxes down.</p>
             
-            <table border="1" cellpadding="10" cellspacing="0">
+            <table border="1" cellpadding="10" cellspacing="0" style="width: 100%; max-width: 350px; margin: 0 auto; border-collapse: collapse;">
                 <caption>5x5 Crossword Grid Pattern</caption>
                 <thead>
                     <tr>
@@ -404,6 +419,7 @@ def generate_seo_title(date, crossword_data):
     across_count = len(crossword_data['clues']['across'])
     down_count = len(crossword_data['clues']['down'])
     total_clues = across_count + down_count
+    week_num = get_week_of_month(date)
     
     title = template.format(
         date=date.strftime('%B %d, %Y'),
@@ -412,7 +428,8 @@ def generate_seo_title(date, crossword_data):
         total=total_clues,
         across=across_count,
         down=down_count,
-        time=random.choice(['1', '2', '3'])
+        time=random.choice(['1', '2', '3']),
+        week_num=week_num
     )
     
     return title
@@ -425,6 +442,8 @@ MINI_IMAGES = [
 def format_mini_to_html(crossword_data, date):
     """Format Mini crossword data to professional HTML with comprehensive SEO"""
     
+    week_num = get_week_of_month(date)
+
     # Select random Mini-specific image
     selected_image = random.choice(MINI_IMAGES)
     image_url = f"https://raw.githubusercontent.com/xwordhint/answer/main/mini-image/{selected_image}"
@@ -436,6 +455,7 @@ def format_mini_to_html(crossword_data, date):
     across_count = len(crossword_data['clues']['across'])
     down_count = len(crossword_data['clues']['down'])
     total_clues = across_count + down_count
+
     
     # Fetch internal links from sitemap
     internal_links = fetch_sitemap_urls(max_links=15)
@@ -519,7 +539,7 @@ def format_mini_to_html(crossword_data, date):
         </section>
             
         <section id="grid-layout">
-            {create_mini_grid_html(crossword_data)}
+            {create_mini_grid_html(crossword_data, week_num)}
         </section>
         
         <section id="across-clues">
@@ -766,40 +786,40 @@ def format_mini_to_html(crossword_data, date):
         </section>
             
         <section id="faq" itemscope itemtype="https://schema.org/FAQPage">
-            <h2>Common Questions About NYT Mini Crossword</h2>
+            <h2>Common Questions About Trivia Week {week_num}</h2>
             
             <div itemprop="mainEntity" itemscope itemtype="https://schema.org/Question">
-                <h3 itemprop="name">When can I play the NYT Mini?</h3>
+                <h3 itemprop="name">When can I play the Trivia Week {week_num} Mini?</h3>
                 <div itemprop="acceptedAnswer" itemscope itemtype="https://schema.org/Answer">
-                    <p itemprop="text">The puzzle comes out at 10 PM Eastern Time the night before. So you can play Monday's puzzle starting Sunday at 10 PM.</p>
+                    <p itemprop="text">The Trivia Week {week_num} puzzle is available at 10 PM Eastern Time the night before.</p>
                 </div>
             </div>
             
             <div itemprop="mainEntity" itemscope itemtype="https://schema.org/Question">
-                <h3 itemprop="name">How fast should I be able to solve it?</h3>
+                <h3 itemprop="name">How fast should I be able to solve Trivia Week {week_num}?</h3>
                 <div itemprop="acceptedAnswer" itemscope itemtype="https://schema.org/Answer">
-                    <p itemprop="text">Most people solve the Mini in 30 seconds to 2 minutes. Don't worry if you take longer - speed comes with practice!</p>
+                    <p itemprop="text">Most people solve the Trivia Week {week_num} Mini in 30 seconds to 2 minutes. Don't worry if you take longer - speed comes with practice!</p>
                 </div>
             </div>
             
             <div itemprop="mainEntity" itemscope itemtype="https://schema.org/Question">
-                <h3 itemprop="name">Do I need to pay to play?</h3>
+                <h3 itemprop="name">Do I need to pay to play Trivia Week {week_num}?</h3>
                 <div itemprop="acceptedAnswer" itemscope itemtype="https://schema.org/Answer">
-                    <p itemprop="text">No! The NYT Mini is completely free. You don't need a subscription like the big crossword.</p>
+                    <p itemprop="text">No! The Trivia Week {week_num} NYT Mini is completely free. You don't need a subscription like the big crossword.</p>
                 </div>
             </div>
             
             <div itemprop="mainEntity" itemscope itemtype="https://schema.org/Question">
-                <h3 itemprop="name">What makes a good Mini solver?</h3>
+                <h3 itemprop="name">What makes a good Trivia Week {week_num} solver?</h3>
                 <div itemprop="acceptedAnswer" itemscope itemtype="https://schema.org/Answer">
-                    <p itemprop="text">Good Mini solvers know common short words, can spot wordplay quickly, and use crossing letters well. Practice helps a lot!</p>
+                    <p itemprop="text">Good Trivia Week {week_num} solvers know common short words, can spot wordplay quickly, and use crossing letters well. Practice helps a lot!</p>
                 </div>
             </div>
             
             <div itemprop="mainEntity" itemscope itemtype="https://schema.org/Question">
-                <h3 itemprop="name">Are the puzzles harder on certain days?</h3>
+                <h3 itemprop="name">Are the puzzles harder during Trivia Week {week_num}?</h3>
                 <div itemprop="acceptedAnswer" itemscope itemtype="https://schema.org/Answer">
-                    <p itemprop="text">Unlike the big NYT crossword, the Mini stays about the same difficulty every day. Sometimes Saturday might be a tiny bit harder.</p>
+                    <p itemprop="text">Trivia Week {week_num} puzzles can vary in difficulty. Saturdays are often the hardest, while Mondays are the easiest.</p>
                 </div>
             </div>
         </section>
