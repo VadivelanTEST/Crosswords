@@ -671,7 +671,7 @@ def format_to_html(crossword_data, date):
 # Function to send an email
 def send_email(to_email, subject, html_content):
     from_email = "velanms1993@gmail.com"
-    password = "dqpt ywts nrey hlrp"  # Replace with your real email app password
+    password = "fcem kvha hwmg iciv"  # Replace with your real email app password
 
     msg = MIMEMultipart()
     msg['From'] = from_email
