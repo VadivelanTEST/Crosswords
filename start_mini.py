@@ -838,7 +838,7 @@ def format_mini_to_html(crossword_data, date):
 def send_mini_email(to_email, subject, html_content):
     """Send Mini crossword email with mobile optimization"""
     from_email = "velanms1993@gmail.com"
-    password = "dqpt ywts nrey hlrp"  # Use environment variable in production
+    password = "fcem kvha hwmg iciv"  # Use environment variable in production
     
     msg = MIMEMultipart('alternative')
     msg['From'] = from_email
