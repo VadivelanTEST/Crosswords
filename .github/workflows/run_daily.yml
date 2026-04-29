@@ -2,10 +2,12 @@ name: Run Blogger Script Daily
 on:
   schedule:
     - cron: '30 3 * * *'
-  workflow_dispatch:  # allows manual trigger too
+  workflow_dispatch:
 jobs:
   post-blog:
     runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
