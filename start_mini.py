@@ -866,39 +866,26 @@ def format_mini_to_html(crossword_data, date):
 
     return html
 
-# Function to send email (reusing from original with minor updates)
+# Email-to-Blogger credentials are supplied only through GitHub Actions secrets.
 def send_mini_email(to_email, subject, html_content):
-    """Send Mini crossword email with mobile optimization"""
-    from_email = "velanms1993@gmail.com"
-    password = "fcem kvha hwmg iciv"
-
-    if not from_email or not password:
+    from_email = os.environ.get("BLOGGER_FROM_EMAIL", "").strip()
+    password = os.environ.get("BLOGGER_APP_PASSWORD", "").strip()
+    if not from_email or not password or not to_email:
         raise RuntimeError(
-            "Set MINI_FROM_EMAIL and MINI_EMAIL_APP_PASSWORD environment "
-            "variables instead of hardcoding credentials in the script."
+            "Set BLOGGER_FROM_EMAIL, BLOGGER_APP_PASSWORD and BLOGGER_TO_EMAIL secrets"
         )
 
-    msg = MIMEMultipart('alternative')
-    msg['From'] = from_email
-    msg['To'] = to_email
-    msg['Subject'] = subject
+    msg = MIMEMultipart("alternative")
+    msg["From"] = from_email
+    msg["To"] = to_email
+    msg["Subject"] = subject
+    msg.attach(MIMEText(html_content, "html", "utf-8"))
 
-    text_part = MIMEText("Solve today's NYT Mini Crossword in under 1 minute with our expert hints!", 'plain')
-    html_part = MIMEText(html_content, 'html')
-
-    msg.attach(text_part)
-    msg.attach(html_part)
-
-    try:
-        server = smtplib.SMTP('smtp.gmail.com', 587)
+    with smtplib.SMTP("smtp.gmail.com", 587, timeout=30) as server:
         server.starttls()
         server.login(from_email, password)
         server.send_message(msg)
-        server.quit()
-        return True
-    except Exception as e:
-        print(f"Email send error: {e}")
-        return False
+    return True
 
 # Main function for Mini crossword
 def main():
@@ -920,7 +907,7 @@ def main():
 
         formatted_html = format_mini_to_html(crossword_data, date)
 
-        if send_mini_email("velanms1993.qrco@blogger.com", title, formatted_html):
+        if send_mini_email(os.environ.get('BLOGGER_TO_EMAIL', '').strip(), title, formatted_html):
             print(f"Mini crossword email sent successfully for {date.strftime('%B %d, %Y')}!")
             print(f"Title: {title}")
         else:
