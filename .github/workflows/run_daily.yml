@@ -1,0 +1,17 @@
+name: Daily Publisher (Manual Entry Point)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  entrypoint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Explain branch selection
+        run: |
+          echo "This default-branch workflow exists to enable the Actions Run workflow button."
+          echo "For the updated publisher, select the adsense-fix branch in the Run workflow branch dropdown."
+          echo "This main-branch entry point does not publish to Blogger."
