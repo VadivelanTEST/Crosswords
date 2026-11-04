@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
   pull_request:
     branches:
-      - adsense-fix
+      - main
 
 jobs:
   post-blog:
