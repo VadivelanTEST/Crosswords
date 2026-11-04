@@ -3,12 +3,13 @@ on:
   schedule:
     - cron: '30 3 * * *'
   workflow_dispatch:
+  pull_request:
+    branches:
+      - adsense-fix
 
 jobs:
   post-blog:
     runs-on: ubuntu-latest
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -20,9 +21,12 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-      - name: Validate script syntax
-        run: python -m py_compile start.py
+      - name: Validate Python syntax
+        run: python -m py_compile start.py start_mini.py
+      - name: Run publisher validation tests
+        run: python -m unittest discover -s tests -v
       - name: Publish verified daily crossword
+        if: github.event_name != 'pull_request'
         env:
           BLOGGER_FROM_EMAIL: ${{ secrets.BLOGGER_FROM_EMAIL }}
           BLOGGER_APP_PASSWORD: ${{ secrets.BLOGGER_APP_PASSWORD }}
