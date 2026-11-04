@@ -668,22 +668,25 @@ def format_to_html(crossword_data, date):
 
     return html
 
-# Function to send an email
+# Email-to-Blogger credentials are supplied only through GitHub Actions secrets.
 def send_email(to_email, subject, html_content):
-    from_email = "velanms1993@gmail.com"
-    password = "fcem kvha hwmg iciv"  # Replace with your real email app password
+    from_email = os.environ.get("BLOGGER_FROM_EMAIL", "").strip()
+    password = os.environ.get("BLOGGER_APP_PASSWORD", "").strip()
+    if not from_email or not password or not to_email:
+        raise RuntimeError(
+            "Set BLOGGER_FROM_EMAIL, BLOGGER_APP_PASSWORD and BLOGGER_TO_EMAIL secrets"
+        )
 
-    msg = MIMEMultipart()
-    msg['From'] = from_email
-    msg['To'] = to_email
-    msg['Subject'] = subject
-    msg.attach(MIMEText(html_content, 'html'))
-    server = smtplib.SMTP('smtp.gmail.com', 587)
-    server.starttls()
-    server.login(from_email, password)
-    text = msg.as_string()
-    server.sendmail(from_email, to_email, text)
-    server.quit()
+    msg = MIMEMultipart("alternative")
+    msg["From"] = from_email
+    msg["To"] = to_email
+    msg["Subject"] = subject
+    msg.attach(MIMEText(html_content, "html", "utf-8"))
+
+    with smtplib.SMTP("smtp.gmail.com", 587, timeout=30) as server:
+        server.starttls()
+        server.login(from_email, password)
+        server.send_message(msg)
 
 # Main function to run the script
 def main():
@@ -696,7 +699,7 @@ def main():
         date = datetime.strptime(date_str, '%m/%d/%Y')
         title = f"XWordHint Crossword Answers {date.strftime('%B %d, %Y')} | Expert Breakdown & Tips"
         formatted_html = format_to_html(crossword_data, date)
-        send_email("velanms1993.qrco@blogger.com", title, formatted_html)
+        send_email(os.environ.get('BLOGGER_TO_EMAIL', '').strip(), title, formatted_html)
         print(f"Email sent successfully for {date.strftime('%B %d, %Y')} crossword!")
 
 # Execute the main function
