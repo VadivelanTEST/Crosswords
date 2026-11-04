@@ -5,18 +5,9 @@ import json
 import time
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from nltk.corpus import wordnet
-import nltk
 from datetime import datetime
-import random
 import xml.etree.ElementTree as ET
 import re
-
-# Download wordnet if not already present
-try:
-    nltk.data.find('corpora/wordnet')
-except LookupError:
-    nltk.download('wordnet')
 
 # Helper function to get week of month (1-4)
 def get_week_of_month(date_obj):
@@ -401,6 +392,8 @@ def main():
         raise SystemExit("Set MINI_XWORDINFO_URL to a verified 5x5 Mini data endpoint; no post was published.")
 
     puzzle_date = datetime.now(ZoneInfo("America/New_York")).strftime("%m/%d/%Y")
+    from urllib.parse import quote
+    url = url.replace("{date}", quote(puzzle_date))
     crossword_data = fetch_mini_crossword_data(url)
     if not crossword_data:
         raise SystemExit("No verified Mini puzzle data; publication cancelled.")
