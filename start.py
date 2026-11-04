@@ -5,13 +5,7 @@ import json
 import time
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from nltk.corpus import wordnet
-import nltk
 from datetime import datetime
-import random
-
-# Download wordnet
-nltk.download('wordnet')
 
 # Function to get synonyms
 def get_synonyms(word):
