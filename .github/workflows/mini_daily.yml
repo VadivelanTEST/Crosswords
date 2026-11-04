@@ -1,8 +1,11 @@
 name: Run Mini Blog Script Daily
 on:
-  # Scheduled publishing is intentionally disabled until a genuine 5x5 Mini
-  # data endpoint is configured in the MINI_XWORDINFO_URL repository secret.
+  # Scheduled publishing remains disabled until a genuine 5x5 Mini endpoint
+  # has been verified and configured in the MINI_XWORDINFO_URL secret.
   workflow_dispatch:
+  pull_request:
+    branches:
+      - adsense-fix
 
 jobs:
   post-blog:
@@ -18,9 +21,12 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-      - name: Validate script syntax
-        run: python -m py_compile start_mini.py
+      - name: Validate Python syntax
+        run: python -m py_compile start.py start_mini.py
+      - name: Run publisher validation tests
+        run: python -m unittest discover -s tests -v
       - name: Publish verified NYT Mini
+        if: github.event_name != 'pull_request'
         env:
           BLOGGER_FROM_EMAIL: ${{ secrets.BLOGGER_FROM_EMAIL }}
           BLOGGER_APP_PASSWORD: ${{ secrets.BLOGGER_APP_PASSWORD }}
